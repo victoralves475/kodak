@@ -46,6 +46,7 @@ public class Comment {
 	private Photo photo;
 
 	public Comment() {
+		this.createdAt = LocalDateTime.now();
 	}
 
 }
