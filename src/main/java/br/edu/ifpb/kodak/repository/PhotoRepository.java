@@ -8,6 +8,6 @@ import br.edu.ifpb.kodak.model.Photo;
 
 public interface PhotoRepository extends JpaRepository<Photo, Integer> {
 
-    List<Photo> findByPhotographerId(Long photographerId);
+    List<Photo> findByPhotographerId(int photographerId);
 
 }
