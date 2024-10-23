@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ public class Hashtag {
 	@Column(name = "tag_name", nullable = false)
 	@Getter
 	@Setter
+	@NotNull(message = "O nome da hashtag não pode ser vazio")
 	private String tagName;
 
 	// RELACIONAMENTO COM FOTOS
