@@ -77,7 +77,7 @@
 
 5. **Acessar a Aplicação:**
 
-   (PARA IMPLEMENTADA)
+   (PARA IMPLEMENTAR)
    - Abra o navegador e acesse `http://localhost:8080`.
 
 ## Próximos Passos
