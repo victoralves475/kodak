@@ -15,6 +15,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,12 +33,20 @@ public class Photographer {
 	@Column(name = "name", nullable = false)
 	@Getter
 	@Setter
+	@NotBlank(message = "O nome é obrigatório")
 	private String name;
 
 	@Column(name = "email", nullable = false, unique = true)
 	@Getter
 	@Setter
+	@NotBlank(message = "O email é obrigatório")
+	@Email(message = "O email deve ser válido")
 	private String email;
+	
+	@Column(name = "password", nullable = false)
+	@Getter
+	@Setter
+	private String password;
 
 	// RELACIONAMENTO COM FOTOS
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
