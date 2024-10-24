@@ -17,67 +17,49 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "photographer")
+@Data
 public class Photographer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter
-	@Setter
 	private int id;
 
 	@Column(name = "name", nullable = false)
-	@Getter
-	@Setter
 	@NotBlank(message = "O nome é obrigatório")
 	private String name;
 
 	@Column(name = "email", nullable = false, unique = true)
-	@Getter
-	@Setter
 	@NotBlank(message = "O email é obrigatório")
 	@Email(message = "O email deve ser válido")
 	private String email;
 	
 	@Column(name = "password", nullable = false)
-	@Getter
-	@Setter
 	private String password;
 
 	// RELACIONAMENTO COM FOTOS
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@Getter
-	@Setter
 	private Set<Photo> photos = new HashSet<>();
 
 	// RELACIONAMENTO COM COMENTÁRIOS
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@Getter
-	@Setter
 	private Set<Comment> comments = new HashSet<>();
 
 	// RELACIONAMENTO ENTRE FOTÓGRAFOS (SEGUINDO)
 	@ManyToMany
 	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
-	@Getter
-	@Setter
 	private Set<Photographer> following = new HashSet<>();
 
 	// RELACIONAMENTO ENTRE FOTÓGRAFOS (SEGUIDORES)
 	@ManyToMany(mappedBy = "following")
-	@Getter
-	@Setter
 	private Set<Photographer> followers = new HashSet<>();
 
 	// RELACIONAMENTO COM LIKES EM FOTOS
 	@ManyToMany
 	@JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
-	@Getter
-	@Setter
 	private Set<Photo> likedPhotos = new HashSet<>();
 
 	public Photographer() {

@@ -15,6 +15,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,7 +53,7 @@ public class Photo {
 	@Setter
 	private Set<Photographer> likedPhotographers  = new HashSet<>();
 
-	@ManyToMany(mappedBy = "photo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Getter
 	@Setter
 	private Set<Comment> comments = new HashSet<>();
