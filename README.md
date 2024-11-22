@@ -46,7 +46,7 @@
 
 1. **Pré-requisitos:**
 
-   - **Java 22** instalado.
+   - **Java 21** instalado.
    - **Maven** instalado.
    - **PostgreSQL** instalado e configurado.
 
@@ -54,19 +54,36 @@
 
    ```bash
    git clone https://github.com/victoralves475/kodak.git
-   cd seu-repositorio
    ```
 
 3. **Configurar o Banco de Dados:**
 
-   - Crie um banco de dados PostgreSQL chamado `kodak`.
-   - Atualize o arquivo `application.properties` com as credenciais do banco de dados.
-
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/kodak
-   spring.datasource.username=seu-usuario
-   spring.datasource.password=sua-senha
+   - Crie um banco de dados PostgreSQL
+   - - No IDX Project:
+   ```bash
+   psql postgres
+   CREATE DATABASE kodak_db;
+   \c kodak_db
+   CREATE USER kodak_backend WITH ENCRYPTED PASSWORD 'ifpb';
+   GRANT ALL PRIVILEGES ON DATABASE kodak_db TO kodak_backend;
+   GRANT ALL ON SCHEMA public TO kodak_backend;
    ```
+
+   - Atualize o arquivo `.env` com as credenciais do banco de dados.
+
+   ```.env
+   DB_URL=jdbc:postgresql://localhost:5432/kodak_db
+   DB_USERNAME=kodak_backend
+   DB_PASSWORD=ifpb
+   ```
+
+   - - No IDX Project:
+   ```dev.nix
+   DB_URL="jdbc:postgresql://localhost:5432/kodak_db";
+   DB_USERNAME="kodak_backend";
+   DB_PASSWORD="ifpb";
+   ```
+
 
 4. **Compilar e Executar o Projeto:**
 
