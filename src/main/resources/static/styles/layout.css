@@ -1,0 +1,19 @@
+.parent {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.menu {
+    grid-area: 1 / 1 / 7 / 2;
+}
+
+.content {
+    grid-area: 1 / 2 / 7 / 10;
+}
+
+.info {
+    grid-area: 1 / 10 / 7 / 13;
+}

@@ -6,12 +6,18 @@
     <!-- <meta th:insert="~{/fragments/headfiles :: headfiles(${title})}"> -->
 </head>
 <body>
-<header th:replace="~{/fragments/header :: header}"></header>
 
-<main layout:fragment="content">
-</main>
-
-<footer th:replace="~{/fragments/footer :: footer}"></footer>
+    <div class="parent">
+        <div class="menu">
+            <div th:replace="~{/fragments/menu :: menu}"></div>
+        </div>
+        <div class="content">
+            <main layout:fragment="content"></main>
+        </div>
+        <div class="info">
+            <div th:replace="~{/fragments/info :: info}"></div>
+        </div>
+    </div>
 
 <script th:replace="~{/fragments/scripts :: scripts}"></script>
 </body>

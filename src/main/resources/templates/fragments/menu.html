@@ -1,0 +1,23 @@
+<div th:fragment="menu">
+    <section>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a href="/" th:href="@{/}">Início</a>
+                </li>
+                <li>
+                    <a href="/post" th:href="@{/post}">Postar</a>
+                </li>
+                <li>
+                    <a href="/profile" th:href="@{/profile}">Editar Perfil</a>
+                </li>
+                <li>
+                    <a href="/admin" th:href="@{/admin}">Acesso Administrativo</a>
+                </li>
+                <li>
+                    <a href="/logout" th:href="@{/logout}">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
