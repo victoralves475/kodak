@@ -1,23 +1,38 @@
-<div th:fragment="menu">
-    <section>
-        <div class="menu">
-            <ul>
-                <li>
-                    <a href="/" th:href="@{/}">Início</a>
-                </li>
-                <li>
-                    <a href="/post" th:href="@{/post}">Postar</a>
-                </li>
-                <li>
-                    <a href="/profile" th:href="@{/profile}">Editar Perfil</a>
-                </li>
-                <li>
-                    <a href="/admin" th:href="@{/admin}">Acesso Administrativo</a>
-                </li>
-                <li>
-                    <a href="/logout" th:href="@{/logout}">Sair</a>
-                </li>
-            </ul>
+<div th:fragment="menu" class="bg-gray-100">
+    <header class="bg-gray-100 text-gray-800 shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <!-- Logo -->
+            <a href="/" th:href="@{/}" class="text-xl font-bold text-gray-900">Kodak</a>
+
+            <!-- Mobile Menu Toggle -->
+            <button
+                    id="menu-toggle"
+                    class="lg:hidden text-gray-800 focus:outline-none"
+            >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <!-- Navigation Menu -->
+            <nav
+                    id="menu"
+                    class="hidden lg:flex flex-col lg:flex-row items-center lg:space-x-6"
+            >
+                <a href="/" th:href="@{/}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Início</a>
+                <a href="/post" th:href="@{/post}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Postar</a>
+                <a href="/profile" th:href="@{/profile}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Editar Perfil</a>
+                <a href="/admin" th:href="@{/admin}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Acesso Administrativo</a>
+                <a href="/logout" th:href="@{/logout}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Sair</a>
+            </nav>
         </div>
-    </section>
+    </header>
+
+    <!-- Optional JavaScript for Menu Toggle -->
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </div>

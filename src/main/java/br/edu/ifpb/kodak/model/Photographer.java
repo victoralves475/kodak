@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "photographer")
@@ -38,6 +39,8 @@ public class Photographer {
 	private String email;
 	
 	@Column(name = "password", nullable = false)
+	@NotBlank(message = "A senha é obrigatória")
+	@Length(min = 6, max = 15, message = "A senha deve ter entre 6 e 15 caracteres")
 	private String password;
 
 	// RELACIONAMENTO COM FOTOS
