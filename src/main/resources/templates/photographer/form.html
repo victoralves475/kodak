@@ -3,36 +3,36 @@
     <link rel="stylesheet" th:href="@{/css/output.css}"/>
 </head>
 <body >
-    <div layout:fragment="content" class="p-4 ">
+    <div layout:fragment="content" class="p-4">
         <div class="max-w-4xl mx-auto px-4 py-8 bg-gray-100 shadow rounded-lg">
             <h2 class="text-2xl font-bold text-gray-900 text-center">Cadastre-se</h2>
             <div class="w-16 h-[2px] bg-gray-300 mx-auto my-4"></div>
             <p class="text-gray-600 text-center">Preencha os campos abaixo para se cadastrar</p>
         </div>
         <div class="py-8 px-4 space-y-4">
-            <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
+            <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md" th:action="@{/photographer}" th:object="${photographer}">
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="nome" id="nome" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input type="text" name="nome" id="nome" th:field="*{name}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                     <label for="nome" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Nome</label>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="email" name="email" id="email" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input type="email" name="email" id="email" th:field= "*{email}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                     <label for="email" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Email</label>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="file" name="foto" id="foto" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                    <input type="file" name="foto" id="foto" th:field= "*{profilePic}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                     <label for="foto" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Foto (opcional)</label>
                 </div>
 
                 <div class="grid md:grid-cols-2 md:gap-6">
                     <div class="relative z-0 w-full mb-5 group">
-                        <input type="text" name="cidade" id="cidade" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" name="cidade" id="cidade" th:field= "*{city}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="cidade" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Cidade (opcional)</label>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
-                        <input type="text" name="pais" id="pais" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                        <input type="text" name="pais" id="pais" th:field= "*{country}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
                         <label for="pais" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">País (opcional)</label>
                     </div>
                 </div>

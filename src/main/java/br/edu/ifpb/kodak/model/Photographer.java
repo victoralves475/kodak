@@ -43,6 +43,15 @@ public class Photographer {
 	@Length(min = 6, max = 15, message = "A senha deve ter entre 6 e 15 caracteres")
 	private String password;
 
+	@Column(name = "city")
+	private String city;
+
+	@Column(name = "country")
+	private String country;
+
+	@Column(name = "profilePic")
+	private String profilePic;
+
 	// RELACIONAMENTO COM FOTOS
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Photo> photos = new HashSet<>();
