@@ -12,18 +12,21 @@
         <div class="py-8 px-4 space-y-4">
             <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md" th:action="@{/photographer}" method="POST" th:object="${photographer}">
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="nome" id="nome" th:field="*{name}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input type="text" name="nome" id="nome" th:field="*{name}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                     <label for="nome" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Nome</label>
+                    <div class="text-sm font-semibold text-red-600" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="email" name="email" id="email" th:field= "*{email}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input type="text" name="email" id="email" th:field= "*{email}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                     <label for="email" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Email</label>
+                    <div class="text-sm font-semibold text-red-600" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="password" name="password" id="senha" th:field= "*{password}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input type="password" name="password" id="senha" th:field= "*{password}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                     <label for="senha" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Senha</label>
+                    <div class="text-sm font-semibold text-red-600" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">

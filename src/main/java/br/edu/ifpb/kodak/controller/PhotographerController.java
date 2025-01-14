@@ -2,10 +2,13 @@ package br.edu.ifpb.kodak.controller;
 
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.service.PhotographerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,10 +28,15 @@ public class PhotographerController {
     }
 
     @PostMapping
-    public ModelAndView savePhotographer(Photographer photographer, ModelAndView model, RedirectAttributes attr){
+    public ModelAndView savePhotographer(@Valid Photographer photographer,  BindingResult result, ModelAndView model, RedirectAttributes attr){
+        if (result.hasErrors()) {
+            model.setViewName("/photographer/form");
+            return model;
+
+        }
         photographerService.savePhotographer(photographer);
         attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " " + "salvo" + "com sucesso!");
-        model.setViewName("redirect:/photographer/form");
+        model.setViewName("redirect:/");
         return model;
     }
 }
