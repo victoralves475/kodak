@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Home'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <link rel="stylesheet" th:href="@{/css/output.css}"/>
+</head>
+<body >
+<div layout:fragment="content" class="flex flex-col h-full">
+
+    <div class="h-20 m-auto bg-gray-100 w-2/3 border-gray-400 rounded-lg">
+        <div class="flex h-full text-xs items-center gap-6 justify-center">
+            <div class="flex h-full items-center">
+                <i class="flex items-center justify-center fa-solid text-center fa-user w-16 h-16 text-4xl border-2 border-solid border-black rounded-full"></i>
+            </div>
+            <div class="flex flex-col text-center gap-2">
+            <p class="font-bold"> Nome do usuário </p>
+                <div class="flex gap-3">
+                    <div class="flex flex-col">
+                <p class="text-xs"> Seguidores </p>
+                    <p>1000</p>
+                    </div>
+                    <div class="flex flex-col">
+                <p class="text-xs"> Seguindo </p>
+                    <p>1000</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mx-auto mt-8 grid grid-cols-2 w-1/2 md:grid-cols-3 gap-2">
+        <div>
+            <a href="#"><img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" alt=""></a>
+        </div>
+        <div>
+           <a href="#"><img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt=""></a>
+        </div>
+        <div>
+           <a href="#"><img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"><img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"><img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg" alt=""></a>
+        </div>
+        <div>
+            <a href="#"> <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg" alt=""></a>
+        </div>
+    </div>
+
+
+
+</div>
+</body>
+</html>

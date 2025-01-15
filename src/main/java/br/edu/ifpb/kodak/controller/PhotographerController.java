@@ -39,4 +39,16 @@ public class PhotographerController {
         model.setViewName("redirect:/");
         return model;
     }
+
+    @GetMapping("/home")
+    public ModelAndView getHomePage( Photographer photographer, ModelAndView model, RedirectAttributes attr) {
+        model.setViewName("/photographer/home");
+        return model;
+
+
+
+
+    }
+
+
 }
