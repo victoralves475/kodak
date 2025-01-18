@@ -39,6 +39,7 @@ public class Photographer {
 	private String country;
 
 	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	@Column(name = "profilePic")
 	private byte[] profilePic;
 
@@ -66,5 +67,5 @@ public class Photographer {
 
 	public Photographer() {
 	}
-
+	
 }
