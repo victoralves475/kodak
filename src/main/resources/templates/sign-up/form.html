@@ -10,7 +10,7 @@
             <p class="text-gray-600 text-center">Preencha os campos abaixo para se cadastrar</p>
         </div>
         <div class="py-8 px-4 space-y-4">
-            <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md" th:action="@{/photographer}" method="POST" th:object="${photographer}">
+            <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md" th:action="@{/sign-up}" method="POST" th:object="${photographer}">
                 <div class="relative z-0 w-full mb-5 group">
                     <input type="text" name="nome" id="nome" th:field="*{name}" class="block py-2.5 px-0 w-full text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "/>
                     <label for="nome" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-blue-600">Nome</label>
@@ -49,7 +49,7 @@
                 </button>
             </form>
             <div class="text-center mt-4">
-                <p class="text-gray-600">Já possui uma conta? <a href="/photographer/sign-in" class="text-blue-600 hover:underline">Login</a></p>
+                <p class="text-gray-600">Já possui uma conta? <a href="/login/sign-in" class="text-blue-600 hover:underline">Login</a></p>
             </div>
         </div>
     </div>
