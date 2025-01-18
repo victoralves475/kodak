@@ -1,54 +1,58 @@
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Home'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{/layout/layout}" th:with="title='Home'"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <link rel="stylesheet" th:href="@{/css/output.css}"/>
+    <link rel="stylesheet" th:href="@{/css/output.css}" />
 </head>
 <body>
-<div layout:fragment="content" class="flex flex-col h-full">
+    <div layout:fragment="content" class="flex flex-col h-full">
 
-    <!-- Perfil do Fotógrafo -->
-    <div class="h-32 m-auto bg-gray-100 w-2/3 border-gray-400 rounded-lg">
-        <div class="flex h-full text-xs items-center gap-12 justify-center">
-            <!-- Foto de Perfil -->
-            <div class="flex h-full items-center">
-                <img th:src="@{'/' + ${photographer.profilePicPath}}" alt="Foto de Perfil"
-                     class="w-24 h-24 rounded-full border-2 border-solid border-black object-cover" />
-            </div>
-            <!-- Informações do Fotógrafo -->
-            <div class="flex flex-col justify-center gap-2">
-                <p class="font-bold text-2xl" th:text="${photographer.name}">Nome do Usuário</p>
-                <div class="flex gap-6 justify-center text-center text-lg">
-                    <div class="flex flex-col">
-                        <p> Seguidores </p>
-                        <p th:text="${#lists.size(photographer.followers)}">1000</p>
-                    </div>
-                    <div class="flex flex-col">
-                        <p> Seguindo </p>
-                        <p th:text="${#lists.size(photographer.following)}">1000</p>
+        <!-- Perfil do Fotógrafo -->
+        <div class="h-32 m-auto bg-gray-100 w-2/3 border-gray-400 rounded-lg">
+            <div class="flex h-full text-xs items-center gap-12 justify-center">
+                <!-- Foto de Perfil -->
+                <div class="flex h-full items-center">
+                    <img th:src="@{/uploads/photographers/ + ${photographer.profilePicPath}}"
+                         alt="Foto de Perfil"
+                         class="w-24 h-24 rounded-full border-2 border-solid border-black object-cover" />
+                </div>
+                <!-- Informações do Fotógrafo -->
+                <div class="flex flex-col justify-center gap-2">
+                    <p class="font-bold text-2xl" th:text="${photographer.name}">Nome do Usuário</p>
+                    <div class="flex gap-6 justify-center text-center text-lg">
+                        <div class="flex flex-col">
+                            <p>Seguidores</p>
+                            <p th:text="${#lists.size(photographer.followers)}">1000</p>
+                        </div>
+                        <div class="flex flex-col">
+                            <p>Seguindo</p>
+                            <p th:text="${#lists.size(photographer.following)}">1000</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Botão Nova Publicação -->
-    <div class="mt-6 mx-auto w-2/3 text-center">
-        <a th:href="@{/photographer/new-photo(photographerId=${photographer.id})}"
-           class="inline-block py-2 px-4 bg-blue-600 text-black font-medium rounded-lg hover:bg-blue-700">
-            Nova Publicação
-        </a>
-    </div>
-
-    <!-- Galeria de Fotos -->
-    <div class="mx-auto mt-8 grid grid-cols-2 w-1/2 md:grid-cols-3 gap-2">
-        <!-- Carregar fotos dinamicamente -->
-        <div th:each="photo : ${photographer.photos}">
-            <a href="#">
-                <img th:src="@{'/' + ${photo.path}}" alt="Foto Publicada" 
-                     class="h-auto max-w-full rounded-lg object-cover">
+        <!-- Botão Nova Publicação -->
+        <div class="mt-6 mx-auto w-2/3 text-center">
+            <a th:href="@{/photographer/new-photo(photographerId=${photographer.id})}"
+               class="inline-block py-2 px-4 bg-blue-600 text-black font-medium rounded-lg hover:bg-blue-700">
+                Nova Publicação
             </a>
         </div>
-    </div>
 
-</div>
+        <!-- Galeria de Fotos -->
+        <div class="mx-auto mt-8 grid grid-cols-2 w-1/2 md:grid-cols-3 gap-2">
+            <div th:each="photo : ${photographer.photos}">
+                <!-- Renderiza cada foto do fotógrafo -->
+                <a href="#">
+                    <img th:src="@{/uploads/photographers/ + ${photo.path}}"
+                         alt="Foto Publicada"
+                         class="h-auto max-w-full rounded-lg object-cover">
+                </a>
+            </div>
+        </div>
+
+    </div>
 </body>
 </html>
