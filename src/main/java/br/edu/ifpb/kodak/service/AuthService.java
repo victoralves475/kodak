@@ -34,4 +34,11 @@ public class AuthService {
         // Retorna false se o fotógrafo não for encontrado
         return false;
     }
+    
+    public Photographer authenticateAndGet(LoginRequestDTO loginRequest) {
+        return photographerRepository.findByEmail(loginRequest.getEmail())
+                .filter(photographer -> photographer.getPassword().equals(loginRequest.getPassword()))
+                .orElse(null);
+    }
+    
 }
