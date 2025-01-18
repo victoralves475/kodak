@@ -56,19 +56,20 @@ public class FileStorageService {
      * @throws IOException Se ocorrer um erro ao salvar o arquivo.
      */
     private String saveFile(MultipartFile file, String subDir, String fileName) throws IOException {
-        // Cria o diretório se não existir
+        // Caminho absoluto para salvar o arquivo
         Path uploadPath = Paths.get(uploadDir + subDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // Salva o arquivo no diretório
+        // Caminho completo do arquivo
         Path filePath = uploadPath.resolve(fileName);
         Files.write(filePath, file.getBytes());
 
-        // Retorna o caminho relativo para uso no sistema
-        return uploadDir + subDir + fileName;
+        // Caminho relativo para ser utilizado na aplicação
+        return "/uploads/photographers/" + subDir + fileName;
     }
+
 
     /**
      * Valida o arquivo antes de salvar.
