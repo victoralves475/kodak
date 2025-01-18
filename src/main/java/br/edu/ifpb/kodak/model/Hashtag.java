@@ -38,5 +38,9 @@ public class Hashtag {
 
 	public Hashtag() {
 	}
+	
+	public Hashtag(String tagName) {
+		this.tagName = tagName;
+	}
 
 }

@@ -1,0 +1,34 @@
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Nova Publicação'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <link rel="stylesheet" th:href="@{/css/output.css}"/>
+</head>
+<body>
+<div layout:fragment="content" class="flex flex-col h-full">
+    <div class="mt-12 mx-auto w-2/3 p-6 bg-gray-100 border border-gray-300 rounded-lg">
+        <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Nova Publicação</h2>
+        <form th:action="@{/photographer/upload-photo}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="photographerId" th:value="${photographerId}" />
+
+            <div class="mb-6">
+                <label for="photo" class="block text-sm font-medium text-gray-700">Escolha uma foto</label>
+                <input type="file" name="photo" id="photo" required
+                       class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none">
+            </div>
+
+            <div class="mb-6">
+                <label for="description" class="block text-sm font-medium text-gray-700">Descrição (opcional)</label>
+                <textarea name="description" id="description" rows="3"
+                          class="mt-1 block w-full border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+
+            <div class="text-center">
+                <button type="submit"
+                        class="py-2 px-6 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                    Publicar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
