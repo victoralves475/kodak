@@ -49,48 +49,6 @@ public class PhotographerController {
         return model;
     }
 
-    @GetMapping("/sign-in")
-    public String signInPage( Photographer photographer, Model model, RedirectAttributes attr) {
-        model.addAttribute("photographer", photographer);
-        return "/photographer/sign-in";
-    }
-
-    @PostMapping("/sign-in")
-    public ModelAndView signInPage(
-            @Valid Photographer photographer,
-            BindingResult result,
-            ModelAndView model,
-            RedirectAttributes attr,
-            HttpSession session) {
-
-        if(result.hasErrors()){
-            model.setViewName("/photographer/sign-in");
-            return model;
-        }
-
-        Optional<Photographer> photographerOptional = photographerService.findByEmail(photographer.getEmail()) ;
-
-        if(photographerOptional.isEmpty()){
-            attr.addFlashAttribute("erro", "Fotógrafo não encontrado");
-            model.setViewName("redirect:/sign-in");
-            return model;
-        }
-
-        Photographer photographerSaved = photographerOptional.get();
-
-        if (!photographerService.validatePassword(photographer, photographerSaved)){
-            attr.addFlashAttribute("erro", "Senha incorreta");
-            model.setViewName("redirect:/sign-in");
-            return model;
-        }
-        attr.addFlashAttribute("mensagem", "Login realizado com sucesso!");
-
-        session.setAttribute("photographer", photographerSaved);
-
-        model.setViewName("redirect:/home");
-        return model;
-    }
-
 
 
 }
