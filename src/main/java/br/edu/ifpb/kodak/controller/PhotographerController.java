@@ -66,6 +66,8 @@ public class PhotographerController {
                 .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
 
         model.addAttribute("photographer", photographer);
+//        System.out.println(photographer.getPhotos());
+//        System.out.println(photographer.getEmail());
         return "photographer/home";
     }
     

@@ -3,15 +3,29 @@ package br.edu.ifpb.kodak.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.*;
+import org.hibernate.validator.constraints.Length;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "photographer")
 @Data
+@EqualsAndHashCode(exclude = {"photos"})
 public class Photographer {
 
     @Id
@@ -47,7 +61,7 @@ public class Photographer {
     /**
      * Relacionamento com fotos publicadas pelo fotógrafo.
      */
-    @OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Photo> photos = new HashSet<>();
 
     /**
