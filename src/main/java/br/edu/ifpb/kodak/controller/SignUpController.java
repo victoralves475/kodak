@@ -1,6 +1,7 @@
 package br.edu.ifpb.kodak.controller;
 
 import br.edu.ifpb.kodak.model.Photographer;
+import br.edu.ifpb.kodak.service.FileStorageService;
 import br.edu.ifpb.kodak.service.PhotographerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,21 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/sign-up")
 public class SignUpController {
     @Autowired
     private PhotographerService photographerService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping
     public String getForm(Photographer photographer, Model model) {
@@ -26,9 +34,16 @@ public class SignUpController {
     }
 
     @PostMapping
-    public ModelAndView savePhotographer(@Valid Photographer photographer, BindingResult result, ModelAndView model, RedirectAttributes attr){
+    public ModelAndView savePhotographer(
+            @Valid Photographer photographer,
+            @RequestParam("foto") MultipartFile photo,
+            BindingResult result,
+            ModelAndView model,
+            RedirectAttributes attr) throws IOException
+    {
         if (result.hasErrors()) {
             model.setViewName("/sign-up/form");
+            System.out.println(result.getAllErrors());
             return model;
         }
 
@@ -39,6 +54,13 @@ public class SignUpController {
         }
 
         photographerService.savePhotographer(photographer);
+
+        if(!photo.isEmpty()){
+            String filePath = fileStorageService.saveProfilePic(photo, photographer.getId());
+            photographer.setProfilePicPath(filePath);
+            photographerService.savePhotographer(photographer);
+        }
+
         attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " " + "salvo" + "com sucesso!");
         model.setViewName("redirect:/");
         return model;
