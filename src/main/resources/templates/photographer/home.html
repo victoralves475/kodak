@@ -15,7 +15,7 @@
             <div class="flex h-full text-xs items-center gap-12 justify-center">
                 <!-- Foto de Perfil -->
                 <div class="flex h-full items-center">
-                    <img th:src="@{/uploads/photographers/ + ${photographer.profilePicPath}}"
+                    <img th:src="@{/uploads/photographers/${photographer.profilePicPath}}"
                          alt="Foto de Perfil"
                          class="w-24 h-24 rounded-full border-2 border-solid border-black object-cover" />
                 </div>
@@ -48,7 +48,7 @@
             <div th:each="photo : ${photographer.photos}">
                 <!-- Renderiza cada foto do fotógrafo -->
                 <a href="#">
-                    <img th:src="@{/uploads/photographers/ + ${photo.path}}"
+                    <img th:src="@{/uploads/photographers/${photo.path}}"
                          alt="Foto Publicada"
                          class="h-auto max-w-full rounded-lg object-cover">
                 </a>

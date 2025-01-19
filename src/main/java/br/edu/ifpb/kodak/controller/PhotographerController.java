@@ -42,23 +42,23 @@ public class PhotographerController {
     @Autowired
     private HashtagService hashtagService;
 
-    @GetMapping("/form")
-    public String getForm(Photographer photographer, Model model) {
-        model.addAttribute("photographer", photographer);
-        return "/photographer/form";
-    }
-
-    @PostMapping
-    public ModelAndView savePhotographer(@Valid Photographer photographer, BindingResult result, ModelAndView model, RedirectAttributes attr) {
-        if (result.hasErrors()) {
-            model.setViewName("/photographer/form");
-            return model;
-        }
-        photographerService.savePhotographer(photographer);
-        attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " salvo com sucesso!");
-        model.setViewName("redirect:/");
-        return model;
-    }
+//    @GetMapping("/form")
+//    public String getForm(Photographer photographer, Model model) {
+//        model.addAttribute("photographer", photographer);
+//        return "/photographer/form";
+//    }
+//
+//    @PostMapping
+//    public ModelAndView savePhotographer(@Valid Photographer photographer, BindingResult result, ModelAndView model, RedirectAttributes attr) {
+//        if (result.hasErrors()) {
+//            model.setViewName("/photographer/form");
+//            return model;
+//        }
+//        photographerService.savePhotographer(photographer);
+//        attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " salvo com sucesso!");
+//        model.setViewName("redirect:/");
+//        return model;
+//    }
 
     @GetMapping("/home")
     public String home(@RequestParam("photographerId") Integer photographerId, Model model) {
@@ -66,8 +66,7 @@ public class PhotographerController {
                 .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
 
         model.addAttribute("photographer", photographer);
-//        System.out.println(photographer.getPhotos());
-//        System.out.println(photographer.getEmail());
+
         return "photographer/home";
     }
     
@@ -105,6 +104,7 @@ public class PhotographerController {
                         .collect(Collectors.toSet());
                 newPhoto.setTags(hashtagSet);
             }
+
 
             photoService.savePhoto(newPhoto);
             redirectAttributes.addFlashAttribute("successMessage", "Foto publicada com sucesso!");

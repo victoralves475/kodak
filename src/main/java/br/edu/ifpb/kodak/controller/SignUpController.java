@@ -35,9 +35,8 @@ public class SignUpController {
 
     @PostMapping
     public ModelAndView savePhotographer(
-            @Valid Photographer photographer,
+            @Valid Photographer photographer, BindingResult result,
             @RequestParam("foto") MultipartFile photo,
-            BindingResult result,
             ModelAndView model,
             RedirectAttributes attr) throws IOException
     {
@@ -62,7 +61,7 @@ public class SignUpController {
         }
 
         attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " " + "salvo" + "com sucesso!");
-        model.setViewName("redirect:/");
+        model.setViewName("redirect:/login/sign-in");
         return model;
     }
 }
