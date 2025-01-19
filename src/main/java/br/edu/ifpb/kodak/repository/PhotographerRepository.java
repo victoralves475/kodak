@@ -10,5 +10,10 @@ public interface PhotographerRepository extends JpaRepository<Photographer, Inte
 
     Optional<Photographer> findByEmail(String email);
 
+    boolean existsPhotographerByEmail(String email);
+
+
+
+
 }
 
