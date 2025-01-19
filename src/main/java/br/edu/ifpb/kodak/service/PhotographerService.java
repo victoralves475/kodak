@@ -76,8 +76,10 @@ public class PhotographerService {
 		photographerRepository.deleteById(id);
 	}
 
-	public boolean existsPhotographerByEmail(String email) {
-		return photographerRepository.existsPhotographerByEmail(email);
+	public Optional<Photographer> findByEmail(String email) { return photographerRepository.findByEmail(email); }
+
+	public boolean validatePassword(Photographer photographer1, Photographer photographer2) {
+		return photographer1.getPassword().equals(photographer2.getPassword());
 	}
 
 }
