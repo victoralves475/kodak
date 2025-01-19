@@ -30,8 +30,14 @@ public class SignUpController {
         if (result.hasErrors()) {
             model.setViewName("/sign-up/form");
             return model;
-
         }
+
+        if (photographerService.existsPhotographerByEmail(photographer.getEmail())) {
+            result.rejectValue("email", "error.photographer", "Já existe um fotógrafo cadastrado com este email.");
+            model.setViewName("/sign-up/form");
+            return model;
+        }
+
         photographerService.savePhotographer(photographer);
         attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " " + "salvo" + "com sucesso!");
         model.setViewName("redirect:/");
