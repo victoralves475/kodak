@@ -25,79 +25,71 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "photographer")
 @Data
-@EqualsAndHashCode(exclude = { "photos" })
+@EqualsAndHashCode(exclude = {"photos"})
 public class Photographer {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@Column(name = "name", nullable = false)
-	@NotBlank(message = "O nome é obrigatório")
-	private String name;
+    @Column(name = "name", nullable = false)
+    @NotBlank(message = "O nome é obrigatório")
+    private String name;
 
-	@Column(name = "email", nullable = false, unique = true)
-	@NotBlank(message = "O email é obrigatório")
-	@Email(message = "O email deve ser válido")
-	private String email;
+    @Column(name = "email", nullable = false, unique = true)
+    @NotBlank(message = "O email é obrigatório")
+    @Email(message = "O email deve ser válido")
+    private String email;
 
-	@Column(name = "password", nullable = false)
-	@NotBlank(message = "A senha é obrigatória")
-	@Length(min = 6, max = 15, message = "A senha deve ter entre 6 e 15 caracteres")
-	private String password;
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "A senha é obrigatória")
+    @Length(min = 6, max = 15, message = "A senha deve ter entre 6 e 15 caracteres")
+    private String password;
 
-	@Column(name = "city")
-	private String city;
+    @Column(name = "city")
+    private String city;
 
-	@Column(name = "country")
-	private String country;
+    @Column(name = "country")
+    private String country;
 
-	/**
-	 * Caminho da foto de perfil no sistema de arquivos.
-	 */
-	@Column(name = "profile_pic_path")
-	private String profilePicPath;
+    /**
+     * Caminho da foto de perfil no sistema de arquivos.
+     */
+    @Column(name = "profile_pic_path")
+    private String profilePicPath;
 
-	// Campo para indicar suspensão
-	@Column(nullable = false)
-	private boolean suspended = false;
+    /**
+     * Relacionamento com fotos publicadas pelo fotógrafo.
+     */
+    @OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Photo> photos = new HashSet<>();
 
-	// Campo para indicar se é administrador
-	@Column(nullable = false)
-	private boolean isAdmin = false;
+    /**
+     * Relacionamento com comentários feitos pelo fotógrafo.
+     */
+    @OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> comments = new HashSet<>();
 
-	/**
-	 * Relacionamento com fotos publicadas pelo fotógrafo.
-	 */
-	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Photo> photos = new HashSet<>();
+    /**
+     * Relacionamento com fotógrafos seguidos.
+     */
+    @ManyToMany
+    @JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
+    private Set<Photographer> following = new HashSet<>();
 
-	/**
-	 * Relacionamento com comentários feitos pelo fotógrafo.
-	 */
-	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<Comment> comments = new HashSet<>();
+    /**
+     * Relacionamento com seguidores.
+     */
+    @ManyToMany(mappedBy = "following")
+    private Set<Photographer> followers = new HashSet<>();
 
-	/**
-	 * Relacionamento com fotógrafos seguidos.
-	 */
-	@ManyToMany
-	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
-	private Set<Photographer> following = new HashSet<>();
+    /**
+     * Relacionamento com fotos que o fotógrafo curtiu.
+     */
+    @ManyToMany
+    @JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
+    private Set<Photo> likedPhotos = new HashSet<>();
 
-	/**
-	 * Relacionamento com seguidores.
-	 */
-	@ManyToMany(mappedBy = "following")
-	private Set<Photographer> followers = new HashSet<>();
-
-	/**
-	 * Relacionamento com fotos que o fotógrafo curtiu.
-	 */
-	@ManyToMany
-	@JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
-	private Set<Photo> likedPhotos = new HashSet<>();
-
-	public Photographer() {
-	}
+    public Photographer() {
+    }
 }
