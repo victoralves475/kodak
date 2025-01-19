@@ -7,6 +7,9 @@
 <body>
     <div layout:fragment="content" class="flex flex-col h-full">
 
+        <div class="alert alert-success text-center" th:if="${successMessage}" th:text="${successMessage}"></div>
+        <div class="alert alert-danger text-center" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
         <!-- Perfil do Fotógrafo -->
         <div class="h-32 m-auto bg-gray-100 w-2/3 border-gray-400 rounded-lg">
             <div class="flex h-full text-xs items-center gap-12 justify-center">
@@ -40,7 +43,6 @@
                 Nova Publicação
             </a>
         </div>
-
         <!-- Galeria de Fotos -->
         <div class="mx-auto mt-8 grid grid-cols-2 w-1/2 md:grid-cols-3 gap-2">
             <div th:each="photo : ${photographer.photos}">
