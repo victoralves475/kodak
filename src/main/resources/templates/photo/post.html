@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Publicação'"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link rel="stylesheet" th:href="@{/css/output.css}" />
+</head>
+
+<body>
+    <div layout:fragment="content" class="p-4">
+        <div th:if="${photo}">
+            <img th:src="@{${photo.path}}" alt="Foto da Publicação" />
+            <p th:text="${photo.description}">Descrição da Publicação</p>
+            <p>Publicado por: <span th:text="${photo.photographer.name}">Nome do Usuário</span></p>
+        </div>
+    </div>
+</body>
+
+</html>

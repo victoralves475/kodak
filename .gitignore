@@ -37,3 +37,4 @@ build/
 ### IDX Project ###
 .idx/
 /uploads
+src/main/resources/static/uploads/
