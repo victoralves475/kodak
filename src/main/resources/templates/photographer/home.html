@@ -21,8 +21,8 @@
                 </div>
                 <!-- Informações do Fotógrafo -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex flex-row">
-                    <p class="font-bold text-2xl" th:text="${photographer.name}">Nome do Usuário</p>
+                    <div class="flex flex-row justify-center">
+                        <p class="font-bold text-2xl" th:text="${photographer.name}">Nome do Usuário</p>
                     </div>
                     <div class="flex gap-6 justify-center text-center text-lg">
                         <div class="flex flex-col">
@@ -39,7 +39,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex h-full gap-2 group absolute right-5">
+
+
+                <div th:if ="${owner}" class="flex h-full gap-2 group absolute right-5">
                     <div class="flex items-center justify-center">
                         <i id="lock-icon" class="fa-solid fa-lock fa-2xl w-16 text-center"></i>
                     </div>
@@ -53,11 +55,22 @@
         Libere seu perfil para que outros fotógrafos lhe sigam!
     </span>
                 </div>
+
+                <div th:unless ="${owner}" class="flex h-full gap-2 group absolute top-12 right-7">
+                    <div class="items-center w-2/3 text-center">
+                        <a href= "#" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
+                            <i class="fa-solid fa-user-plus fa-2xl"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+
             </div>
         </div>
 
         <!-- Botão Nova Publicação -->
-        <div class="mt-6 mx-auto w-2/3 text-center">
+        <div th:if ="${owner}" class="mt-6 mx-auto w-2/3 text-center">
             <a th:href="@{/photographer/new-photo(photographerId=${photographer.id})}"
                class="inline-block py-2 px-4 bg-black text-white border-black border-2 font-medium rounded-lg hover:bg-white hover:text-black">
                 Nova Publicação
@@ -76,6 +89,21 @@
         </div>
 
     </div>
+
+    <script>
+        document.getElementById('toggle-lock').addEventListener('change', function () {
+            const lockIcon = document.getElementById('lock-icon');
+            if (this.checked) {
+                lockIcon.classList.remove('fa-lock');
+                lockIcon.classList.add('fa-lock-open');
+            } else {
+                lockIcon.classList.remove('fa-lock-open');
+                lockIcon.classList.add('fa-lock');
+            }
+        });
+
+    </script>
+
 
 </body>
 </html>

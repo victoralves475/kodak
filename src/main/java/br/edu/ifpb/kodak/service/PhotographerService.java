@@ -80,4 +80,9 @@ public class PhotographerService {
 		return photographerRepository.existsPhotographerByEmail(email);
 	}
 
+	public List<Photographer> getPhotographerByName(String name) {
+
+		return photographerRepository.findByNameContainingIgnoreCase(name);
+	}
+
 }
