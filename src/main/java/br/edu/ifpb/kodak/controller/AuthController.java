@@ -1,5 +1,6 @@
 package br.edu.ifpb.kodak.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -32,7 +33,7 @@ public class AuthController {
     public ModelAndView signIn(
             @Valid LoginRequestDTO loginRequest,
             BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes, HttpSession session) {
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -52,6 +53,7 @@ public class AuthController {
             redirectAttributes.addFlashAttribute("errorMessage", "Email ou senha inválidos.");
             modelAndView.setViewName("redirect:/login/sign-in");
         }
+        session.setAttribute("loggedPhotographer", photographer);
 
         return modelAndView;
     }
