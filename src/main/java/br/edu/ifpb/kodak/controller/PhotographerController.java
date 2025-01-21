@@ -136,4 +136,23 @@ public class PhotographerController {
         return photographerService.getPhotographerByName(name);
     }
 
+    @PostMapping("/followUser")
+    public String followPhotographer (@RequestParam ("photographerId") Integer photographerId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Photographer photographerHome = photographerService.getPhotographerById(photographerId)
+                .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+
+        photographerHome.getFollowers().add(loggedPhotographer);
+        loggedPhotographer.getFollowing().add(photographerHome);
+
+        photographerService.savePhotographer(photographerHome);
+        photographerService.savePhotographer(loggedPhotographer);
+
+
+
+        return "redirect:/photographer/home?photographerId=" + photographerId;
+    }
+
+
 }

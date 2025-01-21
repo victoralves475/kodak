@@ -14,6 +14,7 @@ import br.edu.ifpb.kodak.repository.PhotographerRepository;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhotographerService {
@@ -45,7 +46,7 @@ public class PhotographerService {
 //		return photographer;
 //		
 //	}
-	
+	@Transactional
 	public Optional<Photographer> getPhotographerById(int id) {
 	    // Tenta encontrar o fotógrafo pelo ID
 	    Optional<Photographer> photographerOpt = photographerRepository.findById(id);
@@ -60,7 +61,9 @@ public class PhotographerService {
 	        photos.forEach(photo -> photo.setPhotographer(photographer)); // Relacionamento bidirecional
 	        photographer.setPhotos(new HashSet<>(photos));
 
-	        return Optional.of(photographer);
+
+
+			return Optional.of(photographer);
 	    }
 
 	    return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
@@ -84,5 +87,6 @@ public class PhotographerService {
 
 		return photographerRepository.findByNameContainingIgnoreCase(name);
 	}
+
 
 }

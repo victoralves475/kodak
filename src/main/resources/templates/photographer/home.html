@@ -57,10 +57,14 @@
                 </div>
 
                 <div th:unless ="${owner}" class="flex h-full gap-2 group absolute top-12 right-7">
-                    <div class="items-center w-2/3 text-center">
-                        <a href= "#" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
+                    <div class="items-center justify-center w-2/3 text-center">
+                        <form th:action="@{/photographer/followUser}" method="post">
+                        <input type="hidden" name="photographerId" th:value="${photographer.id}" />
+                        <button type="submit" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
                             <i class="fa-solid fa-user-plus fa-2xl"></i>
-                        </a>
+                            <p class="mt-2"> SEGUIR </p>
+                        </button>
+                            </form>
                     </div>
 
                 </div>
