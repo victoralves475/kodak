@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
@@ -46,16 +47,9 @@ public class PhotoService {
 		photoRepository.deleteById(id);
 	}
 
-	public void likePhoto(int photoId, Photographer photographer) {
-		Photo photo = photoRepository.findById(photoId).get();
-		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
-
-		likedPhotographers.add(photographer);
-		
+	public void setLikedPhotographers(Set<Photographer> likedPhotographers, Photo photo) {
 		photo.setLikedPhotographers(likedPhotographers);
-		
-		photoRepository.save(photo); // por algum motivo o like não tá persistindo
-
+		photoRepository.save(photo);
 	}
 
 }
