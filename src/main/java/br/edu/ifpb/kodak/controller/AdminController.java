@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.service.PhotographerService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,8 +25,15 @@ public class AdminController {
     /**
      * Listagem de fotógrafos para administração.
      */
-    @GetMapping("/photographers")
-    public String listPhotographers(Model model) {
+    @GetMapping()
+    public String listPhotographers(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+        if (!loggedPhotographer.isAdmin()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Você não tem permissão para acessar esta página.");
+            return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
+        }
+
         List<Photographer> photographers = photographerService.getAllPhotographers();
         model.addAttribute("photographers", photographers);
         return "admin/photographers"; // Caminho do template em templates/admin/photographers.html
@@ -36,7 +44,7 @@ public class AdminController {
      */
     @PostMapping("/photographers/suspend")
     public String suspendPhotographers(@RequestParam(name = "photographerIds", required = false) List<Integer> photographerIds,
-                                       RedirectAttributes redirectAttributes) {
+                                       RedirectAttributes redirectAttributes, HttpSession session) {
         List<Photographer> allPhotographers = photographerService.getAllPhotographers();
 
         for (Photographer photographer : allPhotographers) {
