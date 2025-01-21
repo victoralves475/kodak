@@ -3,7 +3,9 @@ package br.edu.ifpb.kodak.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +27,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "photographer")
 @Data
-@EqualsAndHashCode(exclude = { "photos" })
+@EqualsAndHashCode(exclude = { "photos", "comments", "following", "followers" })
 public class Photographer {
 
 	@Id
@@ -75,26 +77,28 @@ public class Photographer {
 	/**
 	 * Relacionamento com comentários feitos pelo fotógrafo.
 	 */
-	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Comment> comments = new HashSet<>();
 
 	/**
 	 * Relacionamento com fotógrafos seguidos.
 	 */
-	@ManyToMany
+	@JsonIgnore
+	@ManyToMany (fetch = FetchType.EAGER)
 	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
 	private Set<Photographer> following = new HashSet<>();
 
 	/**
 	 * Relacionamento com seguidores.
 	 */
-	@ManyToMany(mappedBy = "following")
+	@JsonIgnore
+	@ManyToMany(mappedBy = "following", fetch = FetchType.EAGER)
 	private Set<Photographer> followers = new HashSet<>();
 
 	/**
 	 * Relacionamento com fotos que o fotógrafo curtiu.
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
 	private Set<Photo> likedPhotos = new HashSet<>();
 

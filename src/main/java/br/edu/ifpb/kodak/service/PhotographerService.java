@@ -46,7 +46,7 @@ public class PhotographerService {
 //		return photographer;
 //		
 //	}
-	@Transactional
+
 	public Optional<Photographer> getPhotographerById(int id) {
 	    // Tenta encontrar o fotógrafo pelo ID
 	    Optional<Photographer> photographerOpt = photographerRepository.findById(id);
