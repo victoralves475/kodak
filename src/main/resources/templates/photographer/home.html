@@ -94,20 +94,19 @@
 
     </div>
 
-    <script>
+    <script layout:fragment="script">
         document.getElementById('toggle-lock').addEventListener('change', function () {
             const lockIcon = document.getElementById('lock-icon');
+
             if (this.checked) {
                 lockIcon.classList.remove('fa-lock');
                 lockIcon.classList.add('fa-lock-open');
             } else {
                 lockIcon.classList.remove('fa-lock-open');
                 lockIcon.classList.add('fa-lock');
+
             }
         });
-
     </script>
-
-
 </body>
 </html>
