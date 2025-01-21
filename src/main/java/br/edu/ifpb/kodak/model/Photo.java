@@ -3,6 +3,7 @@ package br.edu.ifpb.kodak.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +40,7 @@ public class Photo {
 
     @ManyToOne
     @JoinColumn(name = "photographer_id", nullable = false)
+    @JsonIgnore  // Evita a serialização da relação reversa: Necessário para não dar erro na barra de pesquisa.
     private Photographer photographer;
 
     @ManyToMany
@@ -52,4 +54,5 @@ public class Photo {
 
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
+
 }
