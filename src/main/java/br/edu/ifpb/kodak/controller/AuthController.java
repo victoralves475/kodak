@@ -48,14 +48,23 @@ public class AuthController {
 
         if (photographer != null) {
             redirectAttributes.addFlashAttribute("successMessage", "Login realizado com sucesso!");
+            session.setAttribute("loggedPhotographer", photographer);
             modelAndView.setViewName("redirect:/photographer/home?photographerId=" + photographer.getId());
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Email ou senha inválidos.");
             modelAndView.setViewName("redirect:/login/sign-in");
         }
-        session.setAttribute("loggedPhotographer", photographer);
 
         return modelAndView;
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+        // Invalida a sessão para deslogar o usuário
+        session.invalidate();
+        // Adiciona uma mensagem de sucesso
+        redirectAttributes.addFlashAttribute("successMessage", "Você foi deslogado com sucesso.");
+        // Redireciona para a página de login
+        return "redirect:/login/sign-in";
+    }
 }
