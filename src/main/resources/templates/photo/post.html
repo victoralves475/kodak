@@ -8,6 +8,7 @@
 <body>
     <div layout:fragment="content">
         <div class="bg-gray-100 h-screen justify-center ml-10 mr-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2">
+            <div class="alert alert-danger text-center" th:if="${errorMessage}" th:text="${errorMessage}"></div>
             <!-- Image -->
             <div class="mb-4">
                 <img th:src="@{${photo.path}}" alt="Post Image"
@@ -88,8 +89,8 @@
                 </div>
                 <div class="mt-4">
                     <!-- Comment 1 -->
-                    <div class="flex items-center space-x-2" th:each="comment : ${photo.comments}">
-                        <img th:src="@{${photo.photographer.profilePicPath}}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                    <div class="flex items-center space-x-2 mt-2" th:each="comment : ${photo.comments}">
+                        <img th:src="@{${comment.photographer.profilePicPath}}" alt="User Avatar" class="w-6 h-6 rounded-full">
                         <div>
                             <div class="grid-cols-2 grid gap-2">
                                 <span class="text-gray-800 font-semibold" th:text="${comment.photographer.name}"></span>

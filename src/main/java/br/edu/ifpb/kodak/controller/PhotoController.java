@@ -16,6 +16,7 @@ import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.service.PhotoService;
 import br.edu.ifpb.kodak.service.PhotographerService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/photo")
@@ -27,20 +28,36 @@ public class PhotoController {
     private PhotographerService photographerService;
 
     @GetMapping("/post")
-    public String postPage(@RequestParam("photoId") Integer photoId, Model model) {
+    public String postPage(@RequestParam("photoId") Integer photoId, Model model, HttpSession session) {
         Photo photo = photoService.getPhotoById(photoId)
                 .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
         model.addAttribute("photo", photo);
+
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+        boolean owner = true;
+
+        if (loggedPhotographer.getId() != photo.getPhotographer().getId()) {
+            owner = false;
+        }
+        model.addAttribute("owner", owner);
 
         return "photo/post";
     }
 
     @PostMapping("/like")
-    public String likePhoto(@RequestParam("photoId") Integer photoId, Model model) {
+    public String likePhoto(@RequestParam("photoId") Integer photoId, Model model, HttpSession session) {
+        Photo photo = photoService.getPhotoById(photoId)
+                .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
-        Photographer photographer = photographerService.getPhotographerById(1).get();
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+        boolean owner = true;
 
-        photoService.likePhoto(photoId, photographer);
+        if (loggedPhotographer.getId() != photo.getPhotographer().getId()) {
+            owner = false;
+            photographerService.likePhoto(photoId, loggedPhotographer);
+        }
+
+        // model.addAttribute("loggedPhotographer", loggedPhotographer);
 
         return "redirect:/photo/post?photoId=" + photoId;
     }
