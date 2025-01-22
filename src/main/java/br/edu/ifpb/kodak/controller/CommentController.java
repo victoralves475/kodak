@@ -19,7 +19,8 @@ import br.edu.ifpb.kodak.model.Comment;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.repository.PhotoRepository;
 import br.edu.ifpb.kodak.service.CommentService;
-import br.edu.ifpb.kodak.service.PhotographerService;
+import br.edu.ifpb.kodak.service.PhotoService;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/comment")
@@ -27,21 +28,24 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+
     @Autowired
-    private PhotoRepository photoRepository;
-    @Autowired
-    private PhotographerService photographerService;
+    private PhotoService photoService;
 
     @PostMapping("/new")
     public String newComment(@RequestParam("photoId") Integer photoId,
-                             @RequestParam("commentText") String commentText, Model model) {
-        Photographer photographer = photographerService.getPhotographerById(1).get();
-        Photo photo = photoRepository.findById(photoId).get();
-        Comment comment = new Comment();
-        comment.setCommentText(commentText);
-        comment.setPhoto(photo);
-        comment.setPhotographer(photographer);
-        commentService.saveComment(comment);
+                             @RequestParam("commentText") String commentText, Model model, HttpSession session) {
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+        Photo photo = photoService.getPhotoById(photoId).orElse(null);
+
+        if (loggedPhotographer.getId() == photo.getPhotographer().getId()) {
+            model.addAttribute("errorMessage", "Você não pode comentar em suas próprias fotos.");
+            return "redirect:/photo/post?photoId=" + photoId;
+        }
+
+        commentService.addCommentToPhoto(commentText, photo, loggedPhotographer);
+        
         return "redirect:/photo/post?photoId=" + photoId;
     }
 }

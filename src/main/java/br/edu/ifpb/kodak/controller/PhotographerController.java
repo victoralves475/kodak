@@ -66,13 +66,19 @@ public class PhotographerController {
 
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
         boolean owner = true;
+        boolean follow = true;
 
         if (loggedPhotographer.getId() != photographerHome.getId()) {
             owner = false;
+        }
+        if (photographerHome.isLockedFollow()){
+            follow = false;
 
         }
+
         model.addAttribute("owner", owner);
         model.addAttribute("photographer", photographerHome);
+        model.addAttribute("follow", follow);
 
 //        if (loggedPhotographer != null) {
 //            model.addAttribute("photographer", loggedPhotographer);
@@ -136,4 +142,37 @@ public class PhotographerController {
         return photographerService.getPhotographerByName(name);
     }
 
-}
+    @PostMapping("/followUser")
+    public String followPhotographer (@RequestParam ("photographerId") Integer photographerId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Photographer photographerHome = photographerService.getPhotographerById(photographerId)
+                .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+        Photographer fotografo = photographerService.getPhotographerById(loggedPhotographer.getId()).get();
+
+        if(photographerHome.getFollowers().contains(fotografo)) {
+            photographerHome.getFollowers().remove(fotografo);
+            fotografo.getFollowing().remove(photographerHome);
+        } else {
+            photographerHome.getFollowers().add(fotografo);
+            fotografo.getFollowing().add(photographerHome);
+        }
+
+        photographerService.savePhotographer(photographerHome);
+        photographerService.savePhotographer(fotografo);
+
+        return "redirect:/photographer/home?photographerId=" + photographerId;
+    }
+
+    @PostMapping("/lockStatus")
+    public String updateLockStatus( HttpSession session){
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+        photographerService.changeLockStatus(loggedPhotographer.getId());
+
+
+        return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
+    }
+
+
+    }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
@@ -14,6 +15,7 @@ import br.edu.ifpb.kodak.repository.PhotographerRepository;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhotographerService {
@@ -45,7 +47,7 @@ public class PhotographerService {
 //		return photographer;
 //		
 //	}
-	
+
 	public Optional<Photographer> getPhotographerById(int id) {
 	    // Tenta encontrar o fotógrafo pelo ID
 	    Optional<Photographer> photographerOpt = photographerRepository.findById(id);
@@ -60,12 +62,13 @@ public class PhotographerService {
 	        photos.forEach(photo -> photo.setPhotographer(photographer)); // Relacionamento bidirecional
 	        photographer.setPhotos(new HashSet<>(photos));
 
-	        return Optional.of(photographer);
+
+
+			return Optional.of(photographer);
 	    }
 
 	    return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
 	}
-
 
 	public Optional<Photographer> getPhotographerByEmail(String email) {
 		return photographerRepository.findByEmail(email);
@@ -84,5 +87,43 @@ public class PhotographerService {
 
 		return photographerRepository.findByNameContainingIgnoreCase(name);
 	}
+
+	public void changeLockStatus(int id) {
+		Optional<Photographer> photographeropt = photographerRepository.findById(id);
+		if (photographeropt.isPresent()) {
+			Photographer photographer = photographeropt.get();
+			photographer.setLockedFollow(!photographer.isLockedFollow());
+
+
+			photographerRepository.save(photographer);
+		}else {
+		throw new RuntimeException("Fotógrafo não encontrado: " + id);
+	}
+
+	}
+
+	@Transactional
+	public void likePhoto(int photoId, Photographer photographer) {
+		Photo photo = photoService.getPhotoById(photoId)
+				.orElseThrow(() -> new RuntimeException("Foto não encontrada"));
+
+		// Obtém os fotógrafos que curtiram a foto
+		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
+
+		if (likedPhotographers.contains(photographer)) {
+			// Se já curtiu, remove o like
+			likedPhotographers.remove(photographer);
+			photographer.getLikedPhotos().remove(photo);
+		} else {
+			// Se não curtiu, adiciona o like
+			likedPhotographers.add(photographer);
+			photographer.getLikedPhotos().add(photo);
+		}
+
+		// Salva ambas as entidades
+		photoService.savePhoto(photo);
+		photographerRepository.save(photographer);
+	}
+
 
 }

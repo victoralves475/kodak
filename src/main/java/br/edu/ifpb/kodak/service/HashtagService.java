@@ -2,6 +2,7 @@ package br.edu.ifpb.kodak.service;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.kodak.model.Hashtag;
@@ -10,6 +11,7 @@ import br.edu.ifpb.kodak.repository.HashtagRepository;
 @Service
 public class HashtagService {
 
+    @Autowired
     private HashtagRepository hashtagRepository;
 
     public HashtagService(HashtagRepository hashtagRepository) {
