@@ -15,6 +15,7 @@ import br.edu.ifpb.kodak.repository.PhotographerRepository;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhotographerService {
@@ -46,7 +47,7 @@ public class PhotographerService {
 //		return photographer;
 //		
 //	}
-	
+
 	public Optional<Photographer> getPhotographerById(int id) {
 	    // Tenta encontrar o fotógrafo pelo ID
 	    Optional<Photographer> photographerOpt = photographerRepository.findById(id);
@@ -61,7 +62,9 @@ public class PhotographerService {
 	        photos.forEach(photo -> photo.setPhotographer(photographer)); // Relacionamento bidirecional
 	        photographer.setPhotos(new HashSet<>(photos));
 
-	        return Optional.of(photographer);
+
+
+			return Optional.of(photographer);
 	    }
 
 	    return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
@@ -83,6 +86,20 @@ public class PhotographerService {
 	public List<Photographer> getPhotographerByName(String name) {
 
 		return photographerRepository.findByNameContainingIgnoreCase(name);
+	}
+
+	public void changeLockStatus(int id) {
+		Optional<Photographer> photographeropt = photographerRepository.findById(id);
+		if (photographeropt.isPresent()) {
+			Photographer photographer = photographeropt.get();
+			photographer.setLockedFollow(!photographer.isLockedFollow());
+
+
+			photographerRepository.save(photographer);
+		}else {
+		throw new RuntimeException("Fotógrafo não encontrado: " + id);
+	}
+
 	}
 
 	@Transactional
@@ -107,7 +124,6 @@ public class PhotographerService {
 		photoService.savePhoto(photo);
 		photographerRepository.save(photographer);
 	}
-
 
 
 }

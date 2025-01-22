@@ -3,7 +3,9 @@ package br.edu.ifpb.kodak.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -66,6 +68,10 @@ public class Photographer {
 	@Column(nullable = false)
 	private boolean isAdmin = false;
 
+	// Campo para indicar se o perfil poderá ser seguido
+	@Column(nullable = false)
+	private boolean lockedFollow = false;
+
 	/**
 	 * Relacionamento com fotos publicadas pelo fotógrafo.
 	 */
@@ -75,19 +81,21 @@ public class Photographer {
 	/**
 	 * Relacionamento com comentários feitos pelo fotógrafo.
 	 */
-	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Comment> comments = new HashSet<>();
 
 	/**
 	 * Relacionamento com fotógrafos seguidos.
 	 */
-	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonIgnore
+	@ManyToMany (fetch = FetchType.EAGER)
 	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
 	private Set<Photographer> following = new HashSet<>();
 
 	/**
 	 * Relacionamento com seguidores.
 	 */
+	@JsonIgnore
 	@ManyToMany(mappedBy = "following", fetch = FetchType.EAGER)
 	private Set<Photographer> followers = new HashSet<>();
 
