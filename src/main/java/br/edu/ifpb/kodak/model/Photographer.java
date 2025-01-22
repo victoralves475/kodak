@@ -68,6 +68,10 @@ public class Photographer {
 	@Column(nullable = false)
 	private boolean isAdmin = false;
 
+	// Campo para indicar se o perfil poderá ser seguido
+	@Column(nullable = false)
+	private boolean lockedFollow = false;
+
 	/**
 	 * Relacionamento com fotos publicadas pelo fotógrafo.
 	 */

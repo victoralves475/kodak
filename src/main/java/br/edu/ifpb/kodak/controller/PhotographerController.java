@@ -66,13 +66,19 @@ public class PhotographerController {
 
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
         boolean owner = true;
+        boolean follow = true;
 
         if (loggedPhotographer.getId() != photographerHome.getId()) {
             owner = false;
+        }
+        if (photographerHome.isLockedFollow()){
+            follow = false;
 
         }
+
         model.addAttribute("owner", owner);
         model.addAttribute("photographer", photographerHome);
+        model.addAttribute("follow", follow);
 
 //        if (loggedPhotographer != null) {
 //            model.addAttribute("photographer", loggedPhotographer);
@@ -154,5 +160,15 @@ public class PhotographerController {
         return "redirect:/photographer/home?photographerId=" + photographerId;
     }
 
+    @PostMapping("/lockStatus")
+    public String updateLockStatus( HttpSession session){
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
 
-}
+        photographerService.changeLockStatus(loggedPhotographer.getId());
+
+
+        return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
+    }
+
+
+    }

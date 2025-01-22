@@ -46,13 +46,16 @@
                         <i id="lock-icon" class="fa-solid fa-lock fa-2xl w-16 text-center"></i>
                     </div>
                     <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-lock" value="" class="sr-only peer">
+                        <form th:action="@{/photographer/lockStatus}" method="post">
+                        <input type="checkbox" id="toggle-lock" name="locked" value="true" th:checked="${photographer.lockedFollow}"  onchange="document.getElementById('submit-btn').click()" class="sr-only peer">
                         <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <button type="submit" id="submit-btn" hidden></button>
+                        </form>
                     </label>
 
                     <!-- Tooltip -->
                     <span class="absolute top-5 left-1/2 -translate-x-1/2 mb-2 hidden w-max bg-black text-white text-sm rounded px-2 py-1 group-hover:flex items-center">
-        Libere seu perfil para que outros fotógrafos lhe sigam!
+        Permita ou bloqueie novos seguidores!
     </span>
                 </div>
 
@@ -60,10 +63,16 @@
                     <div class="items-center justify-center w-2/3 text-center">
                         <form th:action="@{/photographer/followUser}" method="post">
                         <input type="hidden" name="photographerId" th:value="${photographer.id}" />
-                        <button type="submit" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
+
+                        <button th:if="${follow}"  type="submit" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
                             <i class="fa-solid fa-user-plus fa-2xl"></i>
-                            <p class="mt-2"> SEGUIR </p>
+
                         </button>
+
+                            <button th:unless="${follow}" type="submit" class="inline-block font-bold py-2 px-2 bg-white text-black border-black border-2 rounded-lg cursor-not-allowed" disabled>
+                                <i class="fa-solid fa-user-plus fa-2xl"></i>
+
+                            </button>
                             </form>
                     </div>
 
@@ -95,18 +104,17 @@
     </div>
 
     <script layout:fragment="script">
-        document.getElementById('toggle-lock').addEventListener('change', function () {
-            const lockIcon = document.getElementById('lock-icon');
+        // document.getElementById('toggle-lock').addEventListener('change', function () {
+        //     const lockIcon = document.getElementById('lock-icon');
+        //     if (this.checked) {
+        //         lockIcon.classList.remove('fa-lock-open');
+        //         lockIcon.classList.add('fa-lock');
+        //     } else {
+        //         lockIcon.classList.remove('fa-lock');
+        //         lockIcon.classList.add('fa-lock-open');
+        //     }
+        // });
 
-            if (this.checked) {
-                lockIcon.classList.remove('fa-lock');
-                lockIcon.classList.add('fa-lock-open');
-            } else {
-                lockIcon.classList.remove('fa-lock-open');
-                lockIcon.classList.add('fa-lock');
-
-            }
-        });
     </script>
 </body>
 </html>

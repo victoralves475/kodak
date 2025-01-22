@@ -88,5 +88,21 @@ public class PhotographerService {
 		return photographerRepository.findByNameContainingIgnoreCase(name);
 	}
 
+	public void changeLockStatus(int id) {
+		Optional<Photographer> photographeropt = photographerRepository.findById(id);
+		if (photographeropt.isPresent()) {
+			Photographer photographer = photographeropt.get();
+			photographer.setLockedFollow(!photographer.isLockedFollow());
+
+
+			photographerRepository.save(photographer);
+		}else {
+		throw new RuntimeException("Fotógrafo não encontrado: " + id);
+	}
+
+
+
+
+	}
 
 }
