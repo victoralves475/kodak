@@ -63,11 +63,17 @@ public class PhotographerController {
     public String home(@RequestParam("photographerId") Integer photographerId, Model model, HttpSession session) {
         Photographer photographerHome = photographerService.getPhotographerById(photographerId)
                 .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
-
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+        Photographer fotografo = photographerService.getPhotographerById(loggedPhotographer.getId()).get();
+
+        boolean follower = false;
         boolean owner = true;
         boolean follow = true;
 
+
+        if(photographerHome.getFollowers().contains(fotografo)) {
+            follower = true;
+        }
         if (loggedPhotographer.getId() != photographerHome.getId()) {
             owner = false;
         }
@@ -79,6 +85,7 @@ public class PhotographerController {
         model.addAttribute("owner", owner);
         model.addAttribute("photographer", photographerHome);
         model.addAttribute("follow", follow);
+        model.addAttribute("follower", follower);
 
 //        if (loggedPhotographer != null) {
 //            model.addAttribute("photographer", loggedPhotographer);
