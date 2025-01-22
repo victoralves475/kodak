@@ -93,7 +93,7 @@
         <div class="mx-auto mt-8 grid grid-cols-2 w-1/2 md:grid-cols-3 gap-2">
             <div th:each="photo : ${photographer.photos}">
                 <!-- Renderiza cada foto do fotógrafo -->
-                <a href="#">
+                <a th:href="@{/photo/post(photoId=${photo.id})}">
                     <img th:src="@{${photo.path}}"
                          alt="Foto Publicada"
                          class="h-auto max-w-full rounded-lg object-cover">

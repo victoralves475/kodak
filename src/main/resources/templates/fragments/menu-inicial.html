@@ -1,0 +1,20 @@
+<div th:fragment="menu-inicial" class="bg-gray-100">
+    <header class="bg-gray-100 text-gray-800 shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <!-- Logo -->
+            <a href="/" th:href="@{/}" class="text-xl font-bold text-gray-900">Kodak</a>
+
+            <!-- Navigation Menu -->
+            <nav class="flex space-x-6">
+                <a href="/login/sign-in" th:href="@{/login/sign-in}"
+                   class="py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">
+                    Entrar
+                </a>
+                <a href="/sign-up" th:href="@{/sign-up}"
+                   class="py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">
+                    Cadastrar
+                </a>
+            </nav>
+        </div>
+    </header>
+</div>

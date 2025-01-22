@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "photo")
 @Data
-@EqualsAndHashCode(exclude = {"photographer"})
+@EqualsAndHashCode(exclude = { "photographer", "tags", "likedPhotographers", "comments" })
 public class Photo {
 
     @Id
