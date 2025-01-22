@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "photographer")
 @Data
-@EqualsAndHashCode(exclude = { "photos" })
+@EqualsAndHashCode(exclude = { "photos", "comments", "following", "followers", "likedPhotos" })
 public class Photographer {
 
 	@Id
@@ -81,20 +81,20 @@ public class Photographer {
 	/**
 	 * Relacionamento com fotógrafos seguidos.
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
 	private Set<Photographer> following = new HashSet<>();
 
 	/**
 	 * Relacionamento com seguidores.
 	 */
-	@ManyToMany(mappedBy = "following")
+	@ManyToMany(mappedBy = "following", fetch = FetchType.EAGER)
 	private Set<Photographer> followers = new HashSet<>();
 
 	/**
 	 * Relacionamento com fotos que o fotógrafo curtiu.
 	 */
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
 	private Set<Photo> likedPhotos = new HashSet<>();
 

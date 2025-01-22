@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
@@ -66,7 +67,6 @@ public class PhotographerService {
 	    return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
 	}
 
-
 	public Optional<Photographer> getPhotographerByEmail(String email) {
 		return photographerRepository.findByEmail(email);
 	}
@@ -84,5 +84,30 @@ public class PhotographerService {
 
 		return photographerRepository.findByNameContainingIgnoreCase(name);
 	}
+
+	@Transactional
+	public void likePhoto(int photoId, Photographer photographer) {
+		Photo photo = photoService.getPhotoById(photoId)
+				.orElseThrow(() -> new RuntimeException("Foto não encontrada"));
+
+		// Obtém os fotógrafos que curtiram a foto
+		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
+
+		if (likedPhotographers.contains(photographer)) {
+			// Se já curtiu, remove o like
+			likedPhotographers.remove(photographer);
+			photographer.getLikedPhotos().remove(photo);
+		} else {
+			// Se não curtiu, adiciona o like
+			likedPhotographers.add(photographer);
+			photographer.getLikedPhotos().add(photo);
+		}
+
+		// Salva ambas as entidades
+		photoService.savePhoto(photo);
+		photographerRepository.save(photographer);
+	}
+
+
 
 }
