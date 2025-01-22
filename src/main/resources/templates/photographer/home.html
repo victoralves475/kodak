@@ -64,15 +64,23 @@
                         <form th:action="@{/photographer/followUser}" method="post">
                         <input type="hidden" name="photographerId" th:value="${photographer.id}" />
 
-                        <button th:if="${follow}"  type="submit" class="inline-block font-bold py-2 px-2 bg-black text-white border-black border-2 rounded-lg hover:bg-white hover:text-black">
-                            <i class="fa-solid fa-user-plus fa-2xl"></i>
-
+                            <div th:if="${follow}">
+                                <button th:if="${follower}" type="submit" class="inline-block font-bold py-2 px-2 bg-red-700 text-white border-red-700 border-2 rounded-lg hover:bg-red-500">
+                                    <i class="fa-solid fa-trash-can fa-2xl"></i>
+                                </button>
+                            <button th:unless="${follower}" type="submit" class="inline-block font-bold py-2 px-2 bg-blue-700 text-white border-blue-700 border-2 rounded-lg hover:bg-blue-500">
+                            <i  class="fa-solid fa-user-plus fa-2xl"></i>
                         </button>
+                            </div>
 
-                            <button th:unless="${follow}" type="submit" class="inline-block font-bold py-2 px-2 bg-white text-black border-black border-2 rounded-lg cursor-not-allowed" disabled>
+                            <div th:unless="${follow}">
+                                <button th:if="${follower}" type="submit" class="inline-block font-bold py-2 px-2 bg-red-700 text-white border-red-700 border-2 rounded-lg hover:bg-red-500">
+                                    <i class="fa-solid fa-trash-can fa-2xl"></i>
+                                </button>
+                            <button th:unless="${follower}" type="submit" class="inline-block font-bold py-2 px-2 bg-white text-black border-black border-2 rounded-lg cursor-not-allowed" disabled>
                                 <i class="fa-solid fa-user-plus fa-2xl"></i>
-
                             </button>
+                                </div>
                             </form>
                     </div>
 
