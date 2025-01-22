@@ -7,14 +7,14 @@
 
 <body>
     <div layout:fragment="content">
-        <div class="bg-gray-100 h-screen justify-center ml-10 mr-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2">
+        <div class="bg-gray-100 w-auto justify-center mx-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2" style="height: 750px">
             <div class="alert alert-danger text-center" th:if="${errorMessage}" th:text="${errorMessage}"></div>
             <!-- Image -->
-            <div class="mb-4">
-                <img th:src="@{${photo.path}}" alt="Post Image"
-                    class="justify-center object-cover rounded the-photo w-full h-full">
+            <div class="flex items-center justify-center">
+                <img th:src="@{${photo.path}}" alt="Post Image" class="justify-center object-cover the-photo h-full w-auto">
+
             </div>
-            <div class="bg-white p-8 rounded-lg shadow-md">
+            <div class="bg-white px-8 h-full pt-8 shadow-md">
                 <!-- User Info with Three-Dot Menu -->
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center space-x-2">
