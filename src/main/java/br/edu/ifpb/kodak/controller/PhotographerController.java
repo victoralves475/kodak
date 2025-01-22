@@ -148,14 +148,18 @@ public class PhotographerController {
                 .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
 
+        Photographer fotografo = photographerService.getPhotographerById(loggedPhotographer.getId()).get();
 
-        photographerHome.getFollowers().add(loggedPhotographer);
-        loggedPhotographer.getFollowing().add(photographerHome);
+        if(photographerHome.getFollowers().contains(fotografo)) {
+            photographerHome.getFollowers().remove(fotografo);
+            fotografo.getFollowing().remove(photographerHome);
+        } else {
+            photographerHome.getFollowers().add(fotografo);
+            fotografo.getFollowing().add(photographerHome);
+        }
 
         photographerService.savePhotographer(photographerHome);
-        photographerService.savePhotographer(loggedPhotographer);
-
-
+        photographerService.savePhotographer(fotografo);
 
         return "redirect:/photographer/home?photographerId=" + photographerId;
     }
