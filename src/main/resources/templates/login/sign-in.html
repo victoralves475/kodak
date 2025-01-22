@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Login'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout-inicial}" th:with="title='Login'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <link rel="stylesheet" th:href="@{/css/output.css}"/>
 </head>
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Mensagens de Feedback -->
-    <div class="py-4 px-4">
+    <div class="py-4 px-4 text-center max-w-md h-3/4 mx-auto" >
         <div th:if="${successMessage}" class="p-4 mb-4 text-sm text-green-800 bg-green-200 rounded-lg" role="alert">
             <p th:text="${successMessage}"></p>
         </div>
@@ -20,7 +20,8 @@
         </div>
     </div>
 
-    <div class="py-8 px-4 space-y-4">
+
+    <div class="py-4 px-4 space-y-4">
         <form class="max-w-md h-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md" th:action="@{/login/sign-in}" method="POST" th:object="${loginRequest}">
             <!-- Campo de Email -->
             <div class="relative z-0 w-full mb-5 group">
