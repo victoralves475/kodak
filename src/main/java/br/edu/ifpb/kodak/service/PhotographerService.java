@@ -107,20 +107,16 @@ public class PhotographerService {
 		Photo photo = photoService.getPhotoById(photoId)
 				.orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
-		// Obtém os fotógrafos que curtiram a foto
 		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
 
 		if (likedPhotographers.contains(photographer)) {
-			// Se já curtiu, remove o like
 			likedPhotographers.remove(photographer);
 			photographer.getLikedPhotos().remove(photo);
 		} else {
-			// Se não curtiu, adiciona o like
 			likedPhotographers.add(photographer);
 			photographer.getLikedPhotos().add(photo);
 		}
 
-		// Salva ambas as entidades
 		photoService.savePhoto(photo);
 		photographerRepository.save(photographer);
 	}

@@ -45,7 +45,7 @@ public class PhotoController {
     }
 
     @PostMapping("/like")
-    public String likePhoto(@RequestParam("photoId") Integer photoId, HttpSession session) {
+    public String likePhoto(@RequestParam("photoId") Integer photoId, Model model, HttpSession session) {
         // Recupera a foto pelo ID
         Photo photo = photoService.getPhotoById(photoId)
                 .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
@@ -55,8 +55,12 @@ public class PhotoController {
         Photographer fotografo = photographerService.getPhotographerById(loggedPhotographer.getId()).get();
 
         // Chama o método para curtir/descurtir a foto
-        photographerService.likePhoto(photoId, fotografo);
-
+        if (loggedPhotographer.getId() != photo.getPhotographer().getId()) {
+            photographerService.likePhoto(photoId, fotografo);
+        } else {
+            model.addAttribute("errorMessage", "Você não pode curtir a própria foto");
+        }
+        
         // Redireciona para a página da foto
         return "redirect:/photo/post?photoId=" + photoId;
     }
