@@ -47,6 +47,11 @@ public class AuthController {
         Photographer photographer = authService.authenticateAndGet(loginRequest);
 
         if (photographer != null) {
+            if (photographer.isSuspended()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "A sua conta está suspensa.");
+                modelAndView.setViewName("redirect:/login/sign-in");
+                return modelAndView;
+            }
             redirectAttributes.addFlashAttribute("successMessage", "Login realizado com sucesso!");
             session.setAttribute("loggedPhotographer", photographer);
             modelAndView.setViewName("redirect:/photographer/home?photographerId=" + photographer.getId());

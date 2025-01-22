@@ -56,6 +56,6 @@ public class AdminController {
 
         // Adiciona mensagem de sucesso
         redirectAttributes.addFlashAttribute("message", "As alterações foram salvas com sucesso.");
-        return "redirect:/admin/photographers"; // Redireciona para a página de listagem
+        return "redirect:/admin"; // Redireciona para a página de listagem
     }
 }
