@@ -75,12 +75,14 @@ public class Photographer {
 	/**
 	 * Relacionamento com fotos publicadas pelo fotógrafo.
 	 */
+	@JsonIgnore
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Photo> photos = new HashSet<>();
 
 	/**
 	 * Relacionamento com comentários feitos pelo fotógrafo.
 	 */
+	@JsonIgnore
 	@OneToMany(mappedBy = "photographer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Comment> comments = new HashSet<>();
 
@@ -102,6 +104,7 @@ public class Photographer {
 	/**
 	 * Relacionamento com fotos que o fotógrafo curtiu.
 	 */
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "photographer_photo_like", joinColumns = @JoinColumn(name = "photographer_id"), inverseJoinColumns = @JoinColumn(name = "photo_id"))
 	private Set<Photo> likedPhotos = new HashSet<>();

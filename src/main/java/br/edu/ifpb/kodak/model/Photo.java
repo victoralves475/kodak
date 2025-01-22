@@ -43,15 +43,18 @@ public class Photo {
     @JsonIgnore  // Evita a serialização da relação reversa: Necessário para não dar erro na barra de pesquisa.
     private Photographer photographer;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "photo_hashtag", 
                joinColumns = @JoinColumn(name = "photo_id"), 
                inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
     private Set<Hashtag> tags = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "likedPhotos")
     private Set<Photographer> likedPhotographers = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Comment> comments = new HashSet<>();
 
