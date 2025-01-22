@@ -87,20 +87,27 @@ public class PhotographerService {
 
 	@Transactional
 	public void likePhoto(int photoId, Photographer photographer) {
-		Photo photo = photoService.getPhotoById(photoId).orElseThrow(() -> new RuntimeException("Photo not found"));
-		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
-	
-		if (likedPhotographers.contains(photographer)) {
-			photographer.getLikedPhotos().remove(photo);
-			likedPhotographers.remove(photographer);
-		} else {
-			photographer.getLikedPhotos().add(photo);
-			likedPhotographers.add(photographer);
-		}
-	
+		Photo photo = photoService.getPhotoById(photoId)
+				.orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
+		// Obtém os fotógrafos que curtiram a foto
+		Set<Photographer> likedPhotographers = photo.getLikedPhotographers();
+
+		if (likedPhotographers.contains(photographer)) {
+			// Se já curtiu, remove o like
+			likedPhotographers.remove(photographer);
+			photographer.getLikedPhotos().remove(photo);
+		} else {
+			// Se não curtiu, adiciona o like
+			likedPhotographers.add(photographer);
+			photographer.getLikedPhotos().add(photo);
+		}
+
+		// Salva ambas as entidades
+		photoService.savePhoto(photo);
 		photographerRepository.save(photographer);
-		photoService.setLikedPhotographers(likedPhotographers, photo);
 	}
+
+
 
 }

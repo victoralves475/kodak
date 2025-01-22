@@ -45,21 +45,21 @@ public class PhotoController {
     }
 
     @PostMapping("/like")
-    public String likePhoto(@RequestParam("photoId") Integer photoId, Model model, HttpSession session) {
+    public String likePhoto(@RequestParam("photoId") Integer photoId, HttpSession session) {
+        // Recupera a foto pelo ID
         Photo photo = photoService.getPhotoById(photoId)
                 .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
+        // Recupera o fotógrafo logado da sessão
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
-        boolean owner = true;
+        Photographer fotografo = photographerService.getPhotographerById(loggedPhotographer.getId()).get();
 
-        if (loggedPhotographer.getId() != photo.getPhotographer().getId()) {
-            owner = false;
-            photographerService.likePhoto(photoId, loggedPhotographer);
-        }
+        // Chama o método para curtir/descurtir a foto
+        photographerService.likePhoto(photoId, fotografo);
 
-        // model.addAttribute("loggedPhotographer", loggedPhotographer);
-
+        // Redireciona para a página da foto
         return "redirect:/photo/post?photoId=" + photoId;
     }
+
 
 }
