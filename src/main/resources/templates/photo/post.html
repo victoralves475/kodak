@@ -80,12 +80,13 @@
                 <div class="align-middle p-2">
                     <p class="text-gray-800 font-semibold">Comentários</p>
                 </div>
-                <div th:if="${isAdmin}">
+                <div th:if="${isAdmin and #lists.size(photo.comments) > 0}">
                     <form th:action="@{/pdf}" method="get">
                         <input type="hidden" name="photo_id" th:value="${photo.id}">
                         <button type="submit"
                                 class="flex justify-center items-center gap-2 px-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                            Baixar PDF dos comentários
+                            <i id="file-pdf-icon" class="fa-solid fa-file-pdf fa-2xl w-10 text-center"></i>
+                            Baixar
                         </button>
                     </form>
                 </div>

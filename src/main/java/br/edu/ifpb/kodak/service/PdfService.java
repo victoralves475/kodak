@@ -23,6 +23,8 @@ public class PdfService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         try {
+            this.sortCommentsByDate(comments);
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
             PdfWriter.getInstance(document, baos);
@@ -87,5 +89,9 @@ public class PdfService {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private void sortCommentsByDate(List<Comment> comments) {
+        comments.sort((c1, c2) -> c1.getCreatedAt().compareTo(c2.getCreatedAt()));
     }
 }
