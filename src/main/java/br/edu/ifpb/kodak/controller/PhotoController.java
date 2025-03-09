@@ -40,6 +40,7 @@ public class PhotoController {
             owner = false;
         }
         model.addAttribute("owner", owner);
+        model.addAttribute("isAdmin", loggedPhotographer.isAdmin());
 
         return "photo/post";
     }
