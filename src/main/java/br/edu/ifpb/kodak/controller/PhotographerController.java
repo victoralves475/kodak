@@ -165,6 +165,8 @@ public class PhotographerController {
             fotografo.getFollowing().add(photographerHome);
         }
 
+
+        
         photographerService.savePhotographer(photographerHome);
         photographerService.savePhotographer(fotografo);
 
