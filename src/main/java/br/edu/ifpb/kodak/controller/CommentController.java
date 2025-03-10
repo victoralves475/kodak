@@ -2,16 +2,14 @@ package br.edu.ifpb.kodak.controller;
 
 import br.edu.ifpb.kodak.model.Photo;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 // import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -48,4 +46,27 @@ public class CommentController {
         
         return "redirect:/photo/post?photoId=" + photoId;
     }
+
+    @PutMapping("/update/{id}")
+    @ResponseBody
+    public ResponseEntity<?> updateComment(@PathVariable Integer id,
+                                           @RequestBody Map<String, String> request,
+                                           HttpSession session) {
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+        String newText = request.get("commentText");
+
+        boolean updated = commentService.updateComment(id, loggedPhotographer, newText);
+        return updated ? ResponseEntity.ok(Map.of("success", true)) : ResponseEntity.badRequest().body(Map.of("success", false));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<?> deleteComment(@PathVariable Integer id, HttpSession session) {
+        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+
+        boolean deleted = commentService.deleteComment(id, loggedPhotographer);
+        return deleted ? ResponseEntity.ok(Map.of("success", true)) : ResponseEntity.badRequest().body(Map.of("success", false));
+    }
+
+
 }
