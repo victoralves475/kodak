@@ -1,26 +1,19 @@
 package br.edu.ifpb.kodak.controller;
 
 import br.edu.ifpb.kodak.model.Photo;
-import java.util.List;
-import java.util.Optional;
-
+import br.edu.ifpb.kodak.model.Photographer;
+import br.edu.ifpb.kodak.service.CommentService;
+import br.edu.ifpb.kodak.service.PhotoService;
+import br.edu.ifpb.kodak.service.PhotographerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-// import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import br.edu.ifpb.kodak.model.Comment;
-import br.edu.ifpb.kodak.model.Photographer;
-import br.edu.ifpb.kodak.repository.PhotoRepository;
-import br.edu.ifpb.kodak.service.CommentService;
-import br.edu.ifpb.kodak.service.PhotoService;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/comment")
@@ -32,20 +25,31 @@ public class CommentController {
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private PhotographerService photographerService;
+
     @PostMapping("/new")
     public String newComment(@RequestParam("photoId") Integer photoId,
-                             @RequestParam("commentText") String commentText, Model model, HttpSession session) {
-        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+                             @RequestParam("commentText") String commentText,
+                             Model model, RedirectAttributes redirectAttributes) {
+        // Recupera a autenticação e o email do usuário logado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Photographer loggedPhotographer = photographerService.getPhotographerByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Fotógrafo logado não encontrado"));
 
-        Photo photo = photoService.getPhotoById(photoId).orElse(null);
+        // Recupera a foto
+        Photo photo = photoService.getPhotoById(photoId)
+                .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
+        // Se o fotógrafo logado for o dono da foto, não permite comentar
         if (loggedPhotographer.getId() == photo.getPhotographer().getId()) {
-            model.addAttribute("errorMessage", "Você não pode comentar em suas próprias fotos.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Você não pode comentar em suas próprias fotos.");
             return "redirect:/photo/post?photoId=" + photoId;
         }
 
+        // Adiciona o comentário e redireciona para a página da foto
         commentService.addCommentToPhoto(commentText, photo, loggedPhotographer);
-        
         return "redirect:/photo/post?photoId=" + photoId;
     }
 }

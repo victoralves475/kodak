@@ -3,6 +3,7 @@ package br.edu.ifpb.kodak.controller;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.service.FileStorageService;
 import br.edu.ifpb.kodak.service.PhotographerService;
+import br.edu.ifpb.kodak.service.security.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,12 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/sign-up")
 public class SignUpController {
+
     @Autowired
     private PhotographerService photographerService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -30,7 +35,7 @@ public class SignUpController {
     @GetMapping
     public String getForm(Photographer photographer, Model model) {
         model.addAttribute("photographer", photographer);
-        return "/sign-up/form";
+        return "sign-up/form";
     }
 
     @PostMapping
@@ -41,18 +46,19 @@ public class SignUpController {
             RedirectAttributes attr) throws IOException
     {
         if (result.hasErrors()) {
-            model.setViewName("/sign-up/form");
-            System.out.println(result.getAllErrors());
+            model.setViewName("sign-up/form");
             return model;
         }
 
         if (photographerService.existsPhotographerByEmail(photographer.getEmail())) {
             result.rejectValue("email", "error.photographer", "Já existe um fotógrafo cadastrado com este email.");
-            model.setViewName("/sign-up/form");
+            model.setViewName("sign-up/form");
             return model;
         }
 
-        photographerService.savePhotographer(photographer);
+        Photographer savedPhotographer = photographerService.savePhotographer(photographer);
+
+        usuarioService.createUsuarioFromPhotographer(savedPhotographer);
 
         if(!photo.isEmpty()){
             String filePath = fileStorageService.saveProfilePic(photo, photographer.getId());
@@ -60,7 +66,7 @@ public class SignUpController {
             photographerService.savePhotographer(photographer);
         }
 
-        attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " " + "salvo" + "com sucesso!");
+        attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " salvo com sucesso!");
         model.setViewName("redirect:/login/sign-in");
         return model;
     }
