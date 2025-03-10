@@ -27,8 +27,18 @@ public class CommentService {
 	}
 
 	// Delete
-	public void deleteComment(int id) {
-		commentRepository.deleteById(id);
+	public boolean deleteComment(int id, Photographer loggedPhotographer) {
+		Optional<Comment> commentOpt = commentRepository.findById(id);
+
+		if (commentOpt.isPresent()) {
+			Comment comment = commentOpt.get();
+
+			if (loggedPhotographer.isAdmin() || isCommentOwner(comment, loggedPhotographer)) {
+				commentRepository.deleteById(id);
+				return true;
+			}
+		}
+		return false; // Comentário não encontrado
 	}
 
 	// Read
@@ -48,5 +58,26 @@ public class CommentService {
 		comment.setPhoto(photo);
 		commentRepository.save(comment);
 	}
+
+	public boolean updateComment(int id, Photographer photographer, String newCommentText) {
+		Optional<Comment> commentOpt = commentRepository.findById(id);
+
+		if (commentOpt.isPresent()) {
+			Comment comment = commentOpt.get();
+
+			if(isCommentOwner(comment, photographer)) {
+				comment.setCommentText(newCommentText);
+				commentRepository.save(comment);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isCommentOwner(Comment comment, Photographer loggedPhotographer) {
+		return comment.getPhotographer().getId() == loggedPhotographer.getId();
+	}
+
+
 
 }
