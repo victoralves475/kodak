@@ -31,12 +31,12 @@ public class HashtagService {
     }
 
     public Optional<Hashtag> getHashtagByTagName(String tagName) {
-        return hashtagRepository.findByTagName(tagName);
+        return hashtagRepository.findByTagNameContainingIgnoreCase(tagName);
     }
 
     // Find or Create
     public Hashtag findOrCreateByName(String tagName) {
-        return hashtagRepository.findByTagName(tagName)
+        return hashtagRepository.findByTagNameContainingIgnoreCase(tagName)
                 .orElseGet(() -> create(new Hashtag(tagName)));
     }
 
