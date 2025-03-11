@@ -1,3 +1,4 @@
+/*
 package br.edu.ifpb.kodak.controller;
 
 import br.edu.ifpb.kodak.model.Comment;
@@ -118,3 +119,4 @@ public class CommentController {
         return "redirect:/home";
     }
 }
+*/

@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt_BR" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/output.css}"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/output.css}" />
     <script src="https://kit.fontawesome.com/3d5e4ea8fb.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Meta tags para CSRF -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <script type="text/javascript" th:src="@{/js/comment-edit.js}"></script>
     <!-- <meta th:insert="~{/fragments/headfiles :: headfiles(${title})}"> -->
 </head>
 <body>
-
-    <div class="parent">
-        <div class="menu">
-            <div th:replace="~{/fragments/menu :: menu}"></div>
-        </div>
-        <div class="content py-8">
-            <main layout:fragment="content"></main>
-        </div>
-        <div class="info">
-            <div th:replace="~{/fragments/info :: info}"></div>
-        </div>
+<div class="parent">
+    <div class="menu">
+        <div th:replace="~{/fragments/menu :: menu}"></div>
     </div>
-
+    <div class="content py-8">
+        <main layout:fragment="content"></main>
+    </div>
+    <div class="info">
+        <div th:replace="~{/fragments/info :: info}"></div>
+    </div>
+</div>
 <script layout:fragment="script"></script>
 </body>
 </html>

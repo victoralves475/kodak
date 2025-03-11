@@ -1,17 +1,18 @@
 package br.edu.ifpb.kodak.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.edu.ifpb.kodak.model.Comment;
 import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,36 +22,27 @@ public class CommentService {
 	@Autowired
 	private final CommentRepository commentRepository;
 
-	// CRUD
-
-	// Create
-	public Comment saveComment(Comment comment) {
+	// Cria e persiste um comentário, definindo o createdAt com a data/hora atual
+	public Comment addCommentToPhoto(String commentText, Photo photo, Photographer photographer) {
+		Comment comment = new Comment();
+		comment.setCommentText(commentText);
+		comment.setPhotographer(photographer);
+		comment.setPhoto(photo);
+		comment.setCreatedAt(LocalDateTime.now()); // Define o timestamp de criação
 		return commentRepository.save(comment);
 	}
 
 	// Delete
-	@Transactional
 	public boolean deleteComment(int id, Photographer loggedPhotographer) {
 		Optional<Comment> commentOpt = commentRepository.findById(id);
-
 		if (commentOpt.isPresent()) {
 			Comment comment = commentOpt.get();
-
 			if (loggedPhotographer.isAdmin() || isCommentOwner(comment, loggedPhotographer)) {
-				System.out.println("Entrou if de excluir - service: " + comment.getId());
-
-				commentRepository.deleteCommentById(id); // 🔥 Alterado para excluir o objeto inteiro
-				commentRepository.flush(); // 🔥 Força o JPA a executar a exclusão no banco imediatamente
-
-				System.out.println("Comentário excluído com sucesso no banco.");
+				commentRepository.deleteCommentById(id);
+				commentRepository.flush();
 				return true;
-			} else {
-				System.out.println("Usuário não tem permissão para excluir este comentário.");
 			}
-		} else {
-			System.out.println("Comentário não encontrado no banco.");
 		}
-
 		return false;
 	}
 
@@ -63,44 +55,21 @@ public class CommentService {
 		return commentRepository.findByPhotoId(photoId);
 	}
 
-	public void addCommentToPhoto(String commentText, Photo photo, Photographer photographer) {
-		Comment comment = new Comment();
-		
-		comment.setCommentText(commentText);
-        comment.setPhotographer(photographer);
-		comment.setPhoto(photo);
-		commentRepository.save(comment);
-	}
-
-	public boolean updateComment(int id, Photographer photographer, String newCommentText) {
+	// Atualiza o comentário e retorna o objeto atualizado
+	public Optional<Comment> updateComment(int id, Photographer photographer, String newCommentText) {
 		Optional<Comment> commentOpt = commentRepository.findById(id);
-
 		if (commentOpt.isPresent()) {
 			Comment comment = commentOpt.get();
-
-			System.out.println("🔹 Encontrou comentário ID: " + id);
-
 			if (isCommentOwner(comment, photographer)) {
-				System.out.println("✅ O fotógrafo é dono do comentário!");
-
 				comment.setCommentText(newCommentText);
-				commentRepository.save(comment);
-
-				System.out.println("💾 Comentário atualizado: " + newCommentText);
-				return true;
-			} else {
-				System.out.println("❌ O fotógrafo NÃO é dono do comentário!");
+				Comment updatedComment = commentRepository.save(comment);
+				return Optional.of(updatedComment);
 			}
-		} else {
-			System.out.println("❌ Comentário não encontrado no banco de dados!");
 		}
-		return false;
+		return Optional.empty();
 	}
 
 	private boolean isCommentOwner(Comment comment, Photographer loggedPhotographer) {
 		return comment.getPhotographer().getId() == loggedPhotographer.getId();
 	}
-
-
-
 }
