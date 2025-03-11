@@ -7,6 +7,33 @@ const getCsrfHeaders = () => {
     return tokenMeta && headerMeta ? { [headerMeta.content]: tokenMeta.content } : {};
 };
 
+// Função para enviar a requisição de like via AJAX com JSON
+// Atualiza curtidas via AJAX
+const likePhoto = (photoId) => {
+    const csrfHeaders = getCsrfHeaders();
+    fetch('/photo/like', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...csrfHeaders
+        },
+        body: JSON.stringify({ photoId })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('likes-count').innerText = data.likesCount;
+            } else {
+                alert("Erro ao curtir: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao curtir foto:", error);
+            alert("Erro ao curtir foto.");
+        });
+};
+
+
 // Exibe o formulário de edição removendo a classe "hidden"
 const enableEdit = (commentId) => {
     console.log("enableEdit chamado para commentId:", commentId);
@@ -36,17 +63,12 @@ const saveComment = (commentId) => {
     const textarea = document.getElementById(`edit-textarea-${commentId}`);
     const newText = textarea.value.trim();
     if (newText === "") {
-        if (!confirm("Comentário vazio será excluído. Confirmar?")) {
-            return;
-        }
+        if (!confirm("Comentário vazio será excluído. Confirmar?")) return;
     }
     const csrfHeaders = getCsrfHeaders();
     fetch(`/comment/update/${commentId}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...csrfHeaders
-        },
+        headers: { 'Content-Type': 'application/json', ...csrfHeaders },
         body: JSON.stringify({ commentText: newText })
     })
         .then(response => response.json())
@@ -69,24 +91,17 @@ const saveComment = (commentId) => {
 
 // Envia a requisição de exclusão via AJAX usando fetch
 const deleteComment = (commentId) => {
-    if (!confirm("Deseja realmente excluir este comentário?")) {
-        return;
-    }
+    if (!confirm("Deseja realmente excluir este comentário?")) return;
     const csrfHeaders = getCsrfHeaders();
     fetch(`/comment/delete/${commentId}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            ...csrfHeaders
-        }
+        headers: { 'Content-Type': 'application/json', ...csrfHeaders }
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 const container = document.getElementById(`comment-container-${commentId}`);
-                if (container) {
-                    container.remove();
-                }
+                if (container) container.remove();
             } else {
                 alert("Erro ao excluir comentário: " + data.error);
             }
@@ -102,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const newCommentForm = document.getElementById("new-comment-form");
     if (newCommentForm) {
         newCommentForm.addEventListener("submit", (event) => {
-            event.preventDefault(); // Previne o envio padrão
+            event.preventDefault();
             const photoId = newCommentForm.querySelector("input[name='photoId']").value;
             const commentText = newCommentForm.querySelector("textarea[name='commentText']").value.trim();
             if (commentText === "") {
@@ -112,16 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const csrfHeaders = getCsrfHeaders();
             fetch('/comment/new', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...csrfHeaders
-                },
-                body: JSON.stringify({ photoId: photoId, commentText: commentText })
+                headers: { 'Content-Type': 'application/json', ...csrfHeaders },
+                body: JSON.stringify({ photoId, commentText })
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Aqui você pode atualizar o DOM dinamicamente ou recarregar a página
+                        // Atualize a área de comentários conforme sua necessidade, por exemplo:
                         location.reload();
                     } else {
                         alert("Erro ao enviar comentário: " + data.error);
