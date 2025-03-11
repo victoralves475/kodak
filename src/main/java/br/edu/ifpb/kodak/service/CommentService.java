@@ -11,9 +11,11 @@ import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
 	@Autowired
@@ -27,8 +29,29 @@ public class CommentService {
 	}
 
 	// Delete
-	public void deleteComment(int id) {
-		commentRepository.deleteById(id);
+	@Transactional
+	public boolean deleteComment(int id, Photographer loggedPhotographer) {
+		Optional<Comment> commentOpt = commentRepository.findById(id);
+
+		if (commentOpt.isPresent()) {
+			Comment comment = commentOpt.get();
+
+			if (loggedPhotographer.isAdmin() || isCommentOwner(comment, loggedPhotographer)) {
+				System.out.println("Entrou if de excluir - service: " + comment.getId());
+
+				commentRepository.deleteCommentById(id); // 🔥 Alterado para excluir o objeto inteiro
+				commentRepository.flush(); // 🔥 Força o JPA a executar a exclusão no banco imediatamente
+
+				System.out.println("Comentário excluído com sucesso no banco.");
+				return true;
+			} else {
+				System.out.println("Usuário não tem permissão para excluir este comentário.");
+			}
+		} else {
+			System.out.println("Comentário não encontrado no banco.");
+		}
+
+		return false;
 	}
 
 	// Read
@@ -48,5 +71,36 @@ public class CommentService {
 		comment.setPhoto(photo);
 		commentRepository.save(comment);
 	}
+
+	public boolean updateComment(int id, Photographer photographer, String newCommentText) {
+		Optional<Comment> commentOpt = commentRepository.findById(id);
+
+		if (commentOpt.isPresent()) {
+			Comment comment = commentOpt.get();
+
+			System.out.println("🔹 Encontrou comentário ID: " + id);
+
+			if (isCommentOwner(comment, photographer)) {
+				System.out.println("✅ O fotógrafo é dono do comentário!");
+
+				comment.setCommentText(newCommentText);
+				commentRepository.save(comment);
+
+				System.out.println("💾 Comentário atualizado: " + newCommentText);
+				return true;
+			} else {
+				System.out.println("❌ O fotógrafo NÃO é dono do comentário!");
+			}
+		} else {
+			System.out.println("❌ Comentário não encontrado no banco de dados!");
+		}
+		return false;
+	}
+
+	private boolean isCommentOwner(Comment comment, Photographer loggedPhotographer) {
+		return comment.getPhotographer().getId() == loggedPhotographer.getId();
+	}
+
+
 
 }

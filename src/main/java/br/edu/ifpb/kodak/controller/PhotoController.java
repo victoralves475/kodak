@@ -45,6 +45,7 @@ public class PhotoController {
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("loggedPhotographer", loggedPhotographer);
 
         return "photo/post";
     }
