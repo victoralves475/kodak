@@ -41,6 +41,7 @@ public class PhotoController {
         }
         model.addAttribute("owner", owner);
         model.addAttribute("isAdmin", loggedPhotographer.isAdmin());
+        model.addAttribute("loggedPhotographer", loggedPhotographer);
 
         return "photo/post";
     }
