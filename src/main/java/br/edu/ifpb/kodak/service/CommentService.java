@@ -78,11 +78,21 @@ public class CommentService {
 		if (commentOpt.isPresent()) {
 			Comment comment = commentOpt.get();
 
-			if(isCommentOwner(comment, photographer)) {
+			System.out.println("🔹 Encontrou comentário ID: " + id);
+
+			if (isCommentOwner(comment, photographer)) {
+				System.out.println("✅ O fotógrafo é dono do comentário!");
+
 				comment.setCommentText(newCommentText);
 				commentRepository.save(comment);
+
+				System.out.println("💾 Comentário atualizado: " + newCommentText);
 				return true;
+			} else {
+				System.out.println("❌ O fotógrafo NÃO é dono do comentário!");
 			}
+		} else {
+			System.out.println("❌ Comentário não encontrado no banco de dados!");
 		}
 		return false;
 	}
