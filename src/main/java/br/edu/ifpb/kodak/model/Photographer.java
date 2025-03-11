@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,10 +40,7 @@ public class Photographer {
 	@Email(message = "O email deve ser válido")
 	private String email;
 
-	@Column(name = "password", nullable = false)
-	@NotBlank(message = "A senha é obrigatória")
-	@Length(min = 6, max = 15, message = "A senha deve ter entre 6 e 15 caracteres")
-	private String password;
+	// Removido o campo "password", pois agora a senha é gerenciada pela entidade Usuario.
 
 	@Column(name = "city")
 	private String city;
@@ -69,6 +64,10 @@ public class Photographer {
 	// Campo para indicar se o perfil poderá ser seguido
 	@Column(nullable = false)
 	private boolean lockedFollow = false;
+
+	// Novo campo para controle de comentários (se necessário)
+	@Column(name = "comment_suspend", nullable = false)
+	private boolean commentSuspended = false;
 
 	/**
 	 * Relacionamento com fotos publicadas pelo fotógrafo.
