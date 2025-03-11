@@ -74,9 +74,13 @@
                 <span class="text-xs text-gray-500" th:text="${#temporals.format(comment.createdAt,'dd/MM/yyyy HH:mm')}"></span>
               </div>
               <p th:id="'comment-text-' + ${comment.id}" class="text-gray-700" th:text="${comment.commentText}"></p>
-              <div class="flex space-x-2 mt-1" th:if="${comment.photographer.id == loggedPhotographer.id or isAdmin}">
-                <button type="button" class="text-blue-600 text-xs hover:underline" th:onclick="|enableEdit(${comment.id})|">Editar</button>
-                <button type="button" class="text-red-600 text-xs hover:underline" th:onclick="|deleteComment(${comment.id})|">Excluir</button>
+              <div class="flex space-x-2 mt-1">
+                <div th:if="${comment.photographer.id == loggedPhotographer.id}">
+                  <button type="button" class="text-blue-600 text-xs hover:underline" th:onclick="|enableEdit(${comment.id})|">Editar</button>
+                </div>
+                <div th:if="${comment.photographer.id == loggedPhotographer.id or isAdmin}">
+                  <button type="button" class="text-red-600 text-xs hover:underline" th:onclick="|deleteComment(${comment.id})|">Excluir</button>
+                </div>
               </div>
               <!-- Formulário de edição inline (oculto por padrão) -->
               <div th:id="'edit-container-' + ${comment.id}" class="hidden mt-2">
