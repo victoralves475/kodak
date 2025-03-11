@@ -8,8 +8,12 @@
 <div layout:fragment="content" class="p-4">
     <div class="container mx-auto mt-8">
         <h1 class="text-2xl font-bold mb-4">Gerenciar Fotógrafos</h1>
-        <!-- Formulário único para atualizar suspensão, status de admin e suspensão de comentários -->
+        <!-- Formulário único para atualizar suspensão, status admin e suspensão de comentários -->
         <form th:action="@{/admin/photographers/update}" method="post">
+            <!-- Campo oculto para IDs exibidos -->
+            <div th:each="photographer : ${photographerPage.content}">
+                <input type="hidden" name="displayedIds" th:value="${photographer.id}" />
+            </div>
             <table class="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                 <tr class="bg-gray-100">
@@ -29,24 +33,20 @@
                         <span th:text="${photographer.suspended} ? 'Suspenso' : 'Ativo'"></span>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <!-- Checkbox para suspensão -->
                         <input type="checkbox" name="suspendIds" th:value="${photographer.id}"
                                th:checked="${photographer.suspended}" />
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <!-- Checkbox para status de admin -->
                         <input type="checkbox" name="adminIds" th:value="${photographer.id}"
                                th:checked="${photographer.isAdmin}" />
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <!-- Checkbox para suspensão de comentários -->
                         <input type="checkbox" name="commentSuspendedIds" th:value="${photographer.id}"
                                th:checked="${photographer.commentSuspended}" />
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <!-- Botão para confirmar as alterações -->
             <div class="mt-4">
                 <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">

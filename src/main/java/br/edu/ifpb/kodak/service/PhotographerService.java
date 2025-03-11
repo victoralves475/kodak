@@ -104,4 +104,9 @@ public class PhotographerService {
 		photoService.savePhoto(photo);
 		photographerRepository.save(photographer);
 	}
+
+	public List<Photographer> getPhotographersByIds(List<Integer> ids) {
+		return photographerRepository.findAllById(ids);
+	}
+
 }
