@@ -11,9 +11,11 @@ import br.edu.ifpb.kodak.model.Photo;
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
 	@Autowired
@@ -27,6 +29,7 @@ public class CommentService {
 	}
 
 	// Delete
+	@Transactional
 	public boolean deleteComment(int id, Photographer loggedPhotographer) {
 		Optional<Comment> commentOpt = commentRepository.findById(id);
 
@@ -34,11 +37,21 @@ public class CommentService {
 			Comment comment = commentOpt.get();
 
 			if (loggedPhotographer.isAdmin() || isCommentOwner(comment, loggedPhotographer)) {
-				commentRepository.deleteById(id);
+				System.out.println("Entrou if de excluir - service: " + comment.getId());
+
+				commentRepository.deleteCommentById(id); // 🔥 Alterado para excluir o objeto inteiro
+				commentRepository.flush(); // 🔥 Força o JPA a executar a exclusão no banco imediatamente
+
+				System.out.println("Comentário excluído com sucesso no banco.");
 				return true;
+			} else {
+				System.out.println("Usuário não tem permissão para excluir este comentário.");
 			}
+		} else {
+			System.out.println("Comentário não encontrado no banco.");
 		}
-		return false; // Comentário não encontrado
+
+		return false;
 	}
 
 	// Read
