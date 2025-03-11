@@ -3,6 +3,8 @@ package br.edu.ifpb.kodak.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,11 +32,13 @@ public class AdminController {
     private UsuarioService usuarioService;
 
     /**
-     * Lista os fotógrafos para administração.
-     * Somente usuários com a role ADMIN podem acessar essa página.
+     * Lista os fotógrafos para administração com paginação.
      */
     @GetMapping()
-    public String listPhotographers(Model model, RedirectAttributes redirectAttributes) {
+    public String listPhotographers(
+            @RequestParam(value="page", defaultValue="0") int page,
+            @RequestParam(value="size", defaultValue="10") int size,
+            Model model, RedirectAttributes redirectAttributes) {
         // Recupera a autenticação via SecurityContext
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -49,8 +53,8 @@ public class AdminController {
             return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
         }
 
-        List<Photographer> photographers = photographerService.getAllPhotographers();
-        model.addAttribute("photographers", photographers);
+        Page<Photographer> photographerPage = photographerService.getPhotographers(PageRequest.of(page, 2));
+        model.addAttribute("photographerPage", photographerPage);
         return "admin/photographers";
     }
 
@@ -70,7 +74,6 @@ public class AdminController {
             // Atualiza o status de suspensão
             boolean shouldSuspend = (suspendIds != null && suspendIds.contains(photographer.getId()));
             photographer.setSuspended(shouldSuspend);
-            photographerService.savePhotographer(photographer);
 
             // Atualiza o status de admin: se o ID estiver em adminIds, promove; caso contrário, demove
             if (adminIds != null && adminIds.contains(photographer.getId())) {
@@ -80,12 +83,10 @@ public class AdminController {
                 photographer.setAdmin(false);
                 usuarioService.demoteFromAdmin(photographer.getEmail());
             }
-            // Salva o fotógrafo com o novo status de admin
             photographerService.savePhotographer(photographer);
         }
 
         redirectAttributes.addFlashAttribute("message", "As alterações foram salvas com sucesso.");
         return "redirect:/admin";
     }
-
 }

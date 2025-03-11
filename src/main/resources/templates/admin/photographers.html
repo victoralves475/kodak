@@ -21,7 +21,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="photographer : ${photographers}">
+                <tr th:each="photographer : ${photographerPage.content}">
                     <td class="border border-gray-300 px-4 py-2" th:text="${photographer.name}"></td>
                     <td class="border border-gray-300 px-4 py-2" th:text="${photographer.email}"></td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
@@ -48,6 +48,30 @@
                 </button>
             </div>
         </form>
+
+        <!-- Navegação de paginação -->
+        <div class="mt-4 flex justify-center">
+            <ul class="inline-flex -space-x-px">
+                <li th:if="${photographerPage.hasPrevious()}">
+                    <a th:href="@{/admin(page=${photographerPage.number - 1}, size=${photographerPage.size})}"
+                       class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                        Anterior
+                    </a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, photographerPage.totalPages - 1)}">
+                    <a th:href="@{/admin(page=${i}, size=${photographerPage.size})}"
+                       th:text="${i + 1}"
+                       th:classappend="${photographerPage.number == i} ? ' bg-blue-700 text-white' : ' bg-white text-gray-500'"
+                       class="px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"></a>
+                </li>
+                <li th:if="${photographerPage.hasNext()}">
+                    <a th:href="@{/admin(page=${photographerPage.number + 1}, size=${photographerPage.size})}"
+                       class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                        Próximo
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>
