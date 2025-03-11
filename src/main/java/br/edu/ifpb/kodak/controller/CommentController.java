@@ -63,9 +63,13 @@ public class CommentController {
     @PostMapping("/update/{id}")
     public String updateComment(@PathVariable Integer id,
                                 @RequestParam("commentText") String newText,
-                                HttpSession session,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
-        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+        // Recupera a autenticação e o email do usuário logado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Photographer loggedPhotographer = photographerService.getPhotographerByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Fotógrafo logado não encontrado"));
 
         Optional<Comment> optionalComment = commentService.getCommentById(id);
         if (optionalComment.isPresent()) {
