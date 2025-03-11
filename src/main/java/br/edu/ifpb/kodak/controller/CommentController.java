@@ -54,15 +54,31 @@ public class CommentController {
                                 RedirectAttributes redirectAttributes) {
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
 
-        boolean updated = commentService.updateComment(id, loggedPhotographer, newText);
+        Optional<Comment> optionalComment = commentService.getCommentById(id);
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+            int photoId = comment.getPhoto().getId();
+            boolean updated = commentService.updateComment(id, loggedPhotographer, newText);
 
-        if (updated) {
-            redirectAttributes.addFlashAttribute("successMessage", "Comentário atualizado com sucesso!");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao atualizar comentário.");
+            // Se o comentário estiver vazio, exclui o comentário diretamente
+            if (newText.isBlank()) {
+                boolean deleted = commentService.deleteComment(id, loggedPhotographer);
+                if (deleted) {
+                    redirectAttributes.addFlashAttribute("successMessage", "Comentário removido por estar vazio.");
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Erro ao remover comentário.");
+                }
+                return "redirect:/photo/post?photoId=" + photoId;
+            }
+
+            if (updated) {
+                redirectAttributes.addFlashAttribute("successMessage", "Comentário atualizado com sucesso!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao atualizar comentário.");
+            }
+            return "redirect:/photo/post?photoId=" + photoId; // Redireciona para a página da foto
         }
-
-        return "redirect:/photo/" + id; // Redireciona para a página da foto
+        return "redirect:/";
     }
 
     @PostMapping("/delete/{id}")
