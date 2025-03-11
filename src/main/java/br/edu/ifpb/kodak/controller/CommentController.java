@@ -47,26 +47,47 @@ public class CommentController {
         return "redirect:/photo/post?photoId=" + photoId;
     }
 
-    @PutMapping("/update/{id}")
-    @ResponseBody
-    public ResponseEntity<?> updateComment(@PathVariable Integer id,
-                                           @RequestBody Map<String, String> request,
-                                           HttpSession session) {
+    @PostMapping("/update/{id}")
+    public String updateComment(@PathVariable Integer id,
+                                @RequestParam("commentText") String newText,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
-        String newText = request.get("commentText");
 
         boolean updated = commentService.updateComment(id, loggedPhotographer, newText);
-        return updated ? ResponseEntity.ok(Map.of("success", true)) : ResponseEntity.badRequest().body(Map.of("success", false));
+
+        if (updated) {
+            redirectAttributes.addFlashAttribute("successMessage", "Comentário atualizado com sucesso!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao atualizar comentário.");
+        }
+
+        return "redirect:/photo/" + id; // Redireciona para a página da foto
     }
 
-    @DeleteMapping("/delete/{id}")
-    @ResponseBody
-    public ResponseEntity<?> deleteComment(@PathVariable Integer id, HttpSession session) {
+    @PostMapping("/delete/{id}")
+    public String deleteComment(@PathVariable("id") Integer commentId,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
         Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
 
-        boolean deleted = commentService.deleteComment(id, loggedPhotographer);
-        return deleted ? ResponseEntity.ok(Map.of("success", true)) : ResponseEntity.badRequest().body(Map.of("success", false));
-    }
+        Optional<Comment> optionalComment = commentService.getCommentById(commentId);
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+            int photoId = comment.getPhoto().getId();
+            boolean deleted = commentService.deleteComment(commentId, loggedPhotographer);
+            System.out.println("deletou: " +deleted);
 
+            if (deleted) {
+                redirectAttributes.addFlashAttribute("successMessage", "Comentário excluído com sucesso!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir comentário.");
+            }
+            return "redirect:/photo/post?photoId=" + photoId; // Redireciona para a página da foto
+        }
+
+
+        return "redirect:/home"; // Redireciona para a página da foto
+    }
 
 }
