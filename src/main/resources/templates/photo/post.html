@@ -6,8 +6,8 @@
 >
   <head>
     <link rel="stylesheet" th:href="@{/css/output.css}" />
+    <script type="text/javascript" th:src="@{/js/comment-edit.js}"></script>
   </head>
-
   <body>
     <div layout:fragment="content">
       <div
@@ -143,7 +143,7 @@
               th:each="comment : ${photo.comments}"
             >
               <div>
-                <div class="flex gap-2 border-2 p-2 w-full">
+                <div class="flex gap-2 border-2 p-4 w-full">
                   <div class="basis-1/6">
                     <img
                       th:src="@{${comment.photographer.profilePicPath}}"
@@ -162,26 +162,53 @@
                 </div>
 
                 <!-- Verifica se o usuário autenticado é o autor do comentário -->
-                <div class="flex border-2 p-2">
+                <div class="flex flex-row justify-between gap-2 border-2 p-2">
                   <p
-                    class="text-gray-500 text-sm border-2 basis-3/4"
+                    class="text-gray-500 text-sm basis-3/5 border-2"
                     th:text="${comment.commentText}"
                   ></p>
-                  <div id="actions" class="flex flex-col space-x-2">
-                    <!-- Botão de Editar -->
-                    <button class="text-blue-600 hover:underline text-sm">
-                      Editar
-                    </button>
-                    <button
-                      class="hidden text-green-600 hover:underline text-sm"
-                    >
-                      Salvar
-                    </button>
+                  <div
+                    id="actions"
+                    class="flex flex-col p-2 gap-1 border-2 text-center basis-2/5"
+                  >
+                      <!-- Botão de Editar -->
+                      <button
+                              th:if="${comment.photographer.id == loggedPhotographer.id}"
+                              th:onclick="|enableEdit(${comment.id})|"
+                              class="text-blue-600 hover:underline text-sm border-2">
+                        Editar
+                      </button>
+
                     <!-- Botão de Apagar -->
-                    <button class="text-red-600 hover:underline text-sm">
-                      Apagar
-                    </button>
+
+                    <!-- Botão de Excluir (aparece para o dono do comentário ou admin) -->
+                    <form
+                      class="border-2 w-full "
+                      th:if="${comment.photographer.id == loggedPhotographer.id || isAdmin}"
+                      th:action="@{/comment/delete/{id}(id=${comment.id})}"
+                      method="post"
+                      onsubmit="return confirm('Tem certeza que deseja excluir este comentário?');"
+                    >
+                      <button
+                        type="submit"
+                        class="text-red-600 hover:underline text-sm"
+                      >
+                        Apagar
+                      </button>
+                    </form>
                   </div>
+                </div>
+<!--                style="display: none;"-->
+                <!-- Formulário de edição (oculto por padrão) -->
+                <div th:id="|edit-container-${comment.id}|"  class="border-2 p-2 hidden">
+                  <form class="flex justify-between gap-2">
+                    <textarea th:id="|edit-textarea-${comment.id}|" name="commentText" rows="2"
+                              class="basis-3/5 mb-4 px-3 py-2 border-2 border-gray-300 rounded-lg"></textarea>
+                    <div class="basis-2/5 border-2 p-2 flex flex-col gap-1">
+                      <button type="submit" class="border-2 w-full text-sm">Salvar</button>
+                      <button th:onclick="|disableEdit(event,${comment.id})|" class="border-2 w-full text-sm">Cancelar</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
