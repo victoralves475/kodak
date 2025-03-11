@@ -187,7 +187,7 @@
                       th:if="${comment.photographer.id == loggedPhotographer.id || isAdmin}"
                       th:action="@{/comment/delete/{id}(id=${comment.id})}"
                       method="post"
-                      onsubmit="return confirm('Tem certeza que deseja excluir este comentário?');"
+                      onsubmit="return confirmDelete();"
                     >
                       <button
                         type="submit"
@@ -201,7 +201,11 @@
 <!--                style="display: none;"-->
                 <!-- Formulário de edição (oculto por padrão) -->
                 <div th:id="|edit-container-${comment.id}|"  class="border-2 p-2 hidden">
-                  <form class="flex justify-between gap-2">
+                  <form   th:id="|edit-form-${comment.id}|"
+                          method="post"
+                          th:action="@{/comment/update/{id}(id=${comment.id})}"
+                          onsubmit="return confirmEmptyComment(this)"
+                          class="flex justify-between gap-2">
                     <textarea th:id="|edit-textarea-${comment.id}|" name="commentText" rows="2"
                               class="basis-3/5 mb-4 px-3 py-2 border-2 border-gray-300 rounded-lg"></textarea>
                     <div class="basis-2/5 border-2 p-2 flex flex-col gap-1">
