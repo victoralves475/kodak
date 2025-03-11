@@ -3,6 +3,9 @@ package br.edu.ifpb.kodak.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,49 +16,76 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.edu.ifpb.kodak.model.Photographer;
 import br.edu.ifpb.kodak.service.PhotographerService;
-import jakarta.servlet.http.HttpSession;
+import br.edu.ifpb.kodak.service.security.UsuarioService;
 
 @Controller
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     @Autowired
     private PhotographerService photographerService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     /**
-     * Listagem de fotógrafos para administração.
+     * Lista os fotógrafos para administração.
+     * Somente usuários com a role ADMIN podem acessar essa página.
      */
     @GetMapping()
-    public String listPhotographers(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        Photographer loggedPhotographer = (Photographer) session.getAttribute("loggedPhotographer");
+    public String listPhotographers(Model model, RedirectAttributes redirectAttributes) {
+        // Recupera a autenticação via SecurityContext
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Photographer loggedPhotographer = photographerService.getPhotographerByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Fotógrafo logado não encontrado"));
 
-        if (!loggedPhotographer.isAdmin()) {
+        // Verifica se o usuário possui a role "ADMIN"
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(ga -> ga.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
             redirectAttributes.addFlashAttribute("errorMessage", "Você não tem permissão para acessar esta página.");
             return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
         }
 
         List<Photographer> photographers = photographerService.getAllPhotographers();
         model.addAttribute("photographers", photographers);
-        return "admin/photographers"; // Caminho do template em templates/admin/photographers.html
+        return "admin/photographers";
     }
 
     /**
-     * Atualiza o status de suspensão dos fotógrafos selecionados.
+     * Atualiza, de forma unificada, os status de suspensão e de admin dos fotógrafos.
+     * Espera dois parâmetros: uma lista de IDs para suspensão (suspendIds) e outra para status admin (adminIds).
      */
-    @PostMapping("/photographers/suspend")
-    public String suspendPhotographers(@RequestParam(name = "photographerIds", required = false) List<Integer> photographerIds,
-                                       RedirectAttributes redirectAttributes, HttpSession session) {
+    @PostMapping("/photographers/update")
+    public String updatePhotographers(
+            @RequestParam(name="suspendIds", required=false) List<Integer> suspendIds,
+            @RequestParam(name="adminIds", required=false) List<Integer> adminIds,
+            RedirectAttributes redirectAttributes) {
+
         List<Photographer> allPhotographers = photographerService.getAllPhotographers();
 
         for (Photographer photographer : allPhotographers) {
-            // Verifica se o fotógrafo está na lista de IDs selecionados
-            boolean shouldSuspend = photographerIds != null && photographerIds.contains(photographer.getId());
+            // Atualiza o status de suspensão
+            boolean shouldSuspend = (suspendIds != null && suspendIds.contains(photographer.getId()));
             photographer.setSuspended(shouldSuspend);
+            photographerService.savePhotographer(photographer);
+
+            // Atualiza o status de admin: se o ID estiver em adminIds, promove; caso contrário, demove
+            if (adminIds != null && adminIds.contains(photographer.getId())) {
+                photographer.setAdmin(true);
+                usuarioService.promoteToAdmin(photographer.getEmail());
+            } else {
+                photographer.setAdmin(false);
+                usuarioService.demoteFromAdmin(photographer.getEmail());
+            }
+            // Salva o fotógrafo com o novo status de admin
             photographerService.savePhotographer(photographer);
         }
 
-        // Adiciona mensagem de sucesso
         redirectAttributes.addFlashAttribute("message", "As alterações foram salvas com sucesso.");
-        return "redirect:/admin"; // Redireciona para a página de listagem
+        return "redirect:/admin";
     }
+
 }
