@@ -6,7 +6,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,6 +53,9 @@ public class Photographer {
 	@Column(name = "country")
 	private String country;
 
+	@Column(name = "is_admin", nullable = false)
+	private boolean isAdmin = false;
+
 	/**
 	 * Caminho da foto de perfil no sistema de arquivos.
 	 */
@@ -63,10 +65,6 @@ public class Photographer {
 	// Campo para indicar suspensão
 	@Column(nullable = false)
 	private boolean suspended = false;
-
-	// Campo para indicar se é administrador
-	@Column(nullable = false)
-	private boolean isAdmin = false;
 
 	// Campo para indicar se o perfil poderá ser seguido
 	@Column(nullable = false)
@@ -90,7 +88,7 @@ public class Photographer {
 	 * Relacionamento com fotógrafos seguidos.
 	 */
 	@JsonIgnore
-	@ManyToMany (fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "follow", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followee_id"))
 	private Set<Photographer> following = new HashSet<>();
 
