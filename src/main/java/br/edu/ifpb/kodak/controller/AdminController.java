@@ -37,7 +37,7 @@ public class AdminController {
     @GetMapping()
     public String listPhotographers(
             @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue="10") int size,
+            @RequestParam(value="size", defaultValue="2") int size,
             Model model, RedirectAttributes redirectAttributes) {
         // Recupera a autenticação via SecurityContext
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -53,7 +53,7 @@ public class AdminController {
             return "redirect:/photographer/home?photographerId=" + loggedPhotographer.getId();
         }
 
-        Page<Photographer> photographerPage = photographerService.getPhotographers(PageRequest.of(page, 2));
+        Page<Photographer> photographerPage = photographerService.getPhotographers(PageRequest.of(page, size));
         model.addAttribute("photographerPage", photographerPage);
         return "admin/photographers";
     }
