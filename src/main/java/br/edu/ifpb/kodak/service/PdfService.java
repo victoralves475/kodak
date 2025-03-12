@@ -54,7 +54,7 @@ public class PdfService {
             if (photo.getTags() != null && !photo.getTags().isEmpty()) {
                 StringBuilder tagsStr = new StringBuilder();
                 for (Hashtag tag : photo.getTags()) {
-                    tagsStr.append("#").append(tag.getTagName()).append(" ");
+                    tagsStr.append(tag.getTagName()).append(" ");
                 }
                 Paragraph tagsParagraph = new Paragraph("Hashtags: " + tagsStr.toString(), normalFont);
                 document.add(tagsParagraph);
