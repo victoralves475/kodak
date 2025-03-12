@@ -190,7 +190,7 @@ const addHashtag = (photoId) => {
 };
 
 // Alterna visibilidade da caixa de busca das hashtags
-const toggleDropdown = () => {
+const toggleDropdownPost = () => {
     const dropdownContainer = document.getElementById('dropdown-container');
     dropdownContainer.classList.toggle('hidden');
 };
@@ -203,7 +203,7 @@ const toggleHashtagInput = () => {
 };
 
 // Busca hashtags existentes enquanto digita
-const searchHashTags = (partialName) => {
+const searchHashTagsPost = (partialName) => {
     if (partialName.trim().length === 0) {
         document.getElementById('tag-suggestions').innerHTML = '';
         return;
