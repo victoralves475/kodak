@@ -99,7 +99,7 @@ public class PhotographerController {
             // Salva a foto no sistema de arquivos
             String photoPath = fileStorageService.savePhoto(photo, photographerId);
 
-
+            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" + hashtags);
             // Cria a entidade Photo
             Photo newPhoto = new Photo();
             newPhoto.setPath(photoPath);

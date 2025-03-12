@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Nova Publicação'" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layout/layout}" th:with="title='Nova Publicação'"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <link rel="stylesheet" th:href="@{/css/output.css}"/>
 </head>
@@ -7,7 +8,7 @@
     <div class="max-w-md h-3/4 mx-auto p-6 bg-gray-100 border border-gray-300 rounded-lg">
         <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Nova Publicação</h2>
         <form id="photoform" th:action="@{/photographer/upload-photo}" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="photographerId" th:value="${photographerId}" />
+            <input type="hidden" name="photographerId" th:value="${photographerId}"/>
 
             <div th:if="${error}" class="text-sm font-semibold text-red-600">
                 <p th:text="${error}"></p>
@@ -22,15 +23,22 @@
             <div class="w-full">
                 <div class="mb-6 flex w-full items-center justify-center">
                     <div class="relative group">
-                        <button id="dropdown-button" type="button" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                        <button id="dropdown-button" type="button"
+                                class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                             <span class="mr-2">Selecionar tags</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20"
+                                 fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                      d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"/>
                             </svg>
                         </button>
-                        <div id="dropdown-menu" class="hidden absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1">
+                        <div id="dropdown-menu"
+                             class="hidden absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1">
                             <!-- Search input -->
-                            <input id="search-input" class="block w-full px-4 py-2 text-gray-800 border rounded-md  border-gray-300 focus:outline-none" type="text" value="#" placeholder="" oninput="searchHashTags()" autocomplete="off">
+                            <input id="search-input"
+                                   class="block w-full px-4 py-2 text-gray-800 border rounded-md  border-gray-300 focus:outline-none"
+                                   type="text" value="#" placeholder="" oninput="searchHashTags()" autocomplete="off">
                             <!-- Dropdown content goes here -->
                             <div id="tagresults"></div>
                         </div>
@@ -82,33 +90,51 @@
                 .then(hashtags => {
                     resultsContainer.innerHTML = '';
                     console.log(hashtags)
-                    if (!hashtags || hashtags.length === 0 ) {
-                        resultsContainer.innerHTML = '<a id="newtag" class="block text-gray-700 px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">'+query+'</a>';
-                        const newtagItem = document.getElementById('newtag')
-                        newtagItem.addEventListener("click", () => {
-                            addTag(query)
-                            toggleDropdown()
-                            searchInput.value = ''
-                        });
+                    resultsContainer.innerHTML = '<a id="newtag" class="block text-gray-700 text-center text-sm px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"> Criar nova tag <i class="fa-solid text-black fa-square-plus"></i></a>';
+                    const newtagItem = document.getElementById('newtag')
+                    newtagItem.addEventListener("click", () => {
+                        addTag(query)
+                        toggleDropdown()
+                        searchInput.value = ''
+                        resultsContainer.innerHTML = ''
+                    });
 
-                        return;
-                    }
+                    searchInput.addEventListener("keydown", function (event) {
+                        if (event.key === 'Enter') {
+                            const query = searchInput.value.trim(); // Pegando o valor atualizado no momento do evento
+                            if (query) {
+                                event.preventDefault();
+                                addTag(query);
+                                toggleDropdown();
+                                searchInput.value = '';
+                                resultsContainer.innerHTML = ''
+                            }
+                        }
+                    });
+
+
                     hashtags.forEach(tag => {
                         const item = document.createElement('a');
                         item.href = "#";
                         item.classList.add("block", "px-4", "py-2", "text-gray-700", "hover:bg-gray-100", "cursor-pointer", "rounded-md");
                         item.textContent = tag;
+                        if (item.textContent === query){
+                            newtagItem.remove()
+                        }
                         item.addEventListener("click", () => {
                             addTag(tag)
                             toggleDropdown()
-                            // searchInput.value = ''
+                            searchInput.value = ''
                         });
                         resultsContainer.appendChild(item);
 
+
                     });
+
                 })
                 .catch(error => console.error("Erro ao buscar hashtags:", error));
         }
+
         function addTag(tag) {
             if (selectedTags.has(tag)) return; // Evita duplicatas
 
@@ -138,6 +164,7 @@
             hiddenInput.value = tag;
             document.getElementById("photoform").appendChild(hiddenInput);
         }
+
         // Set initial state
         // toggleDropdown();
 
