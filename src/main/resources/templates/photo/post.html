@@ -61,7 +61,7 @@
       <div id="hashtag-input-container" class="hidden mt-2">
         <input type="text" id="new-hashtag" placeholder="#Hashtag"
                class="border rounded p-2 w-full"
-               oninput="searchHashTags(this.value)"
+               oninput="searchHashTagsPost(this.value)"
                th:attr="onkeydown=|if(event.key==='Enter'){event.preventDefault();confirmAddHashtag(${photo.id});}|"/>
         <div id="tag-suggestions" class="bg-white shadow-md rounded mt-1"></div>
         <div class="flex justify-end space-x-2 mt-2">

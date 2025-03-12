@@ -149,10 +149,20 @@
             const removeBtn = document.createElement("span");
             removeBtn.textContent = " ×";
             removeBtn.classList.add("ml-2", "cursor-pointer", "text-white", "font-bold");
+
             removeBtn.addEventListener("click", () => {
                 selectedTags.delete(tag);
+
+                // Remove o elemento visual da hashtag
                 chip.remove();
+
+                // Remove o input oculto correspondente
+                const hiddenInput = document.querySelector(`input[name='hashtags'][value='${tag}']`);
+                if (hiddenInput) {
+                    hiddenInput.remove();
+                }
             });
+
 
             chip.appendChild(removeBtn);
             selectedTagsContainer.appendChild(chip);
