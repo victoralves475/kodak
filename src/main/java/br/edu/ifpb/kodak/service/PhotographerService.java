@@ -1,32 +1,27 @@
 package br.edu.ifpb.kodak.service;
 
+import br.edu.ifpb.kodak.model.Photo;
+import br.edu.ifpb.kodak.model.Photographer;
+import br.edu.ifpb.kodak.repository.PhotographerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import br.edu.ifpb.kodak.model.Photo;
-import br.edu.ifpb.kodak.model.Photographer;
-import br.edu.ifpb.kodak.repository.PhotographerRepository;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhotographerService {
 
 	@Autowired
 	private PhotographerRepository photographerRepository;
-	
-    @Autowired
-    private PhotoService photoService;
 
-	// CRUD
+	@Autowired
+	private PhotoService photoService;
 
 	// Create
 	public Photographer savePhotographer(Photographer photographer) {
@@ -39,35 +34,28 @@ public class PhotographerService {
 		return photographerRepository.findAll();
 	}
 
-//	public Optional<Photographer> getPhotographerById(int id) {
-//		Optional<Photographer> photographer = photographerRepository.findById(id);
-//		List<Photo> photos = photoService.getPhotosByPhotographerId(id);
-//		System.out.println(photos);
-//		photographer.get().setPhotos(new HashSet<>(photos));
-//		return photographer;
-//		
-//	}
+	public Page<Photographer> getPhotographers(Pageable pageable) {
+		return photographerRepository.findAll(pageable);
+	}
 
 	public Optional<Photographer> getPhotographerById(int id) {
-	    // Tenta encontrar o fotógrafo pelo ID
-	    Optional<Photographer> photographerOpt = photographerRepository.findById(id);
+		// Tenta encontrar o fotógrafo pelo ID
+		Optional<Photographer> photographerOpt = photographerRepository.findById(id);
 
-	    if (photographerOpt.isPresent()) {
-	        Photographer photographer = photographerOpt.get();
+		if (photographerOpt.isPresent()) {
+			Photographer photographer = photographerOpt.get();
 
-	        // Busca as fotos associadas ao fotógrafo
-	        List<Photo> photos = photoService.getPhotosByPhotographerId(id);
+			// Busca as fotos associadas ao fotógrafo
+			List<Photo> photos = photoService.getPhotosByPhotographerId(id);
 
-	        // Adiciona as fotos ao fotógrafo
-	        photos.forEach(photo -> photo.setPhotographer(photographer)); // Relacionamento bidirecional
-	        photographer.setPhotos(new HashSet<>(photos));
-
-
+			// Adiciona as fotos ao fotógrafo
+			photos.forEach(photo -> photo.setPhotographer(photographer)); // Relacionamento bidirecional
+			photographer.setPhotos(new HashSet<>(photos));
 
 			return Optional.of(photographer);
-	    }
+		}
 
-	    return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
+		return Optional.empty(); // Retorna vazio se o fotógrafo não foi encontrado
 	}
 
 	public Optional<Photographer> getPhotographerByEmail(String email) {
@@ -84,22 +72,18 @@ public class PhotographerService {
 	}
 
 	public List<Photographer> getPhotographerByName(String name) {
-
 		return photographerRepository.findByNameContainingIgnoreCase(name);
 	}
 
 	public void changeLockStatus(int id) {
-		Optional<Photographer> photographeropt = photographerRepository.findById(id);
-		if (photographeropt.isPresent()) {
-			Photographer photographer = photographeropt.get();
+		Optional<Photographer> photographerOpt = photographerRepository.findById(id);
+		if (photographerOpt.isPresent()) {
+			Photographer photographer = photographerOpt.get();
 			photographer.setLockedFollow(!photographer.isLockedFollow());
-
-
 			photographerRepository.save(photographer);
-		}else {
-		throw new RuntimeException("Fotógrafo não encontrado: " + id);
-	}
-
+		} else {
+			throw new RuntimeException("Fotógrafo não encontrado: " + id);
+		}
 	}
 
 	@Transactional
@@ -121,5 +105,8 @@ public class PhotographerService {
 		photographerRepository.save(photographer);
 	}
 
+	public List<Photographer> getPhotographersByIds(List<Integer> ids) {
+		return photographerRepository.findAllById(ids);
+	}
 
 }

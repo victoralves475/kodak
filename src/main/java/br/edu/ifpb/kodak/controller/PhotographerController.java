@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -85,7 +86,14 @@ public class PhotographerController {
             @RequestParam("photographerId") Integer photographerId,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "hashtags", required = false) List<String> hashtags,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        if (photo == null || photo.isEmpty() || !photo.getContentType().startsWith("image/")) {
+            model.addAttribute("error", "É necessário enviar uma foto válida");
+            model.addAttribute("photographerId", photographerId);
+            return "photographer/new-photo"; // Retorna para a view do formulário
+        }
 
         try {
             // Salva a foto no sistema de arquivos

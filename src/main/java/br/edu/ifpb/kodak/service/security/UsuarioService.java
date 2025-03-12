@@ -23,11 +23,11 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Método existente para criação de usuário a partir do Photographer
-    public Usuario createUsuarioFromPhotographer(Photographer photographer) {
+    // Método para criar usuário a partir do Photographer e senha fornecida separadamente
+    public Usuario createUsuarioFromPhotographerWithPassword(Photographer photographer, String password) {
         Usuario usuario = new Usuario();
         usuario.setEmail(photographer.getEmail());
-        usuario.setPassword(passwordEncoder.encode(photographer.getPassword()));
+        usuario.setPassword(passwordEncoder.encode(password));
 
         // Atribui a role "USER" por padrão
         String roleName = "USER";

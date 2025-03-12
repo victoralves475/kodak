@@ -8,8 +8,12 @@
 <div layout:fragment="content" class="p-4">
     <div class="container mx-auto mt-8">
         <h1 class="text-2xl font-bold mb-4">Gerenciar Fotógrafos</h1>
-        <!-- Formulário único para atualizar suspensão e status de admin -->
+        <!-- Formulário único para atualizar suspensão, status admin e suspensão de comentários -->
         <form th:action="@{/admin/photographers/update}" method="post">
+            <!-- Campo oculto para IDs exibidos -->
+            <div th:each="photographer : ${photographerPage.content}">
+                <input type="hidden" name="displayedIds" th:value="${photographer.id}" />
+            </div>
             <table class="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                 <tr class="bg-gray-100">
@@ -18,29 +22,31 @@
                     <th class="border border-gray-300 px-4 py-2">Status</th>
                     <th class="border border-gray-300 px-4 py-2">Suspender</th>
                     <th class="border border-gray-300 px-4 py-2">Admin</th>
+                    <th class="border border-gray-300 px-4 py-2">S. Com.</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="photographer : ${photographers}">
+                <tr th:each="photographer : ${photographerPage.content}">
                     <td class="border border-gray-300 px-4 py-2" th:text="${photographer.name}"></td>
                     <td class="border border-gray-300 px-4 py-2" th:text="${photographer.email}"></td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
                         <span th:text="${photographer.suspended} ? 'Suspenso' : 'Ativo'"></span>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <!-- Checkbox para suspensão -->
                         <input type="checkbox" name="suspendIds" th:value="${photographer.id}"
                                th:checked="${photographer.suspended}" />
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <!-- Checkbox para status de admin -->
                         <input type="checkbox" name="adminIds" th:value="${photographer.id}"
                                th:checked="${photographer.isAdmin}" />
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">
+                        <input type="checkbox" name="commentSuspendedIds" th:value="${photographer.id}"
+                               th:checked="${photographer.commentSuspended}" />
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <!-- Botão para confirmar as alterações -->
             <div class="mt-4">
                 <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">
@@ -48,6 +54,30 @@
                 </button>
             </div>
         </form>
+
+        <!-- Navegação de paginação -->
+        <div class="mt-4 flex justify-center">
+            <ul class="inline-flex -space-x-px">
+                <li th:if="${photographerPage.hasPrevious()}">
+                    <a th:href="@{/admin(page=${photographerPage.number - 1}, size=${photographerPage.size})}"
+                       class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                        Anterior
+                    </a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, photographerPage.totalPages - 1)}">
+                    <a th:href="@{/admin(page=${i}, size=${photographerPage.size})}"
+                       th:text="${i + 1}"
+                       th:classappend="${photographerPage.number == i} ? ' bg-blue-700 text-white' : ' bg-white text-gray-500'"
+                       class="px-3 py-2 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"></a>
+                </li>
+                <li th:if="${photographerPage.hasNext()}">
+                    <a th:href="@{/admin(page=${photographerPage.number + 1}, size=${photographerPage.size})}"
+                       class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                        Próximo
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>

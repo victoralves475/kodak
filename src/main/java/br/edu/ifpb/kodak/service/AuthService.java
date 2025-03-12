@@ -1,11 +1,11 @@
 package br.edu.ifpb.kodak.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import br.edu.ifpb.kodak.model.DTO.LoginRequestDTO;
-import br.edu.ifpb.kodak.model.Photographer;
-import br.edu.ifpb.kodak.repository.PhotographerRepository;
+import br.edu.ifpb.kodak.model.security.Usuario;
+import br.edu.ifpb.kodak.repository.security.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -13,32 +13,35 @@ import java.util.Optional;
 public class AuthService {
 
     @Autowired
-    private PhotographerRepository photographerRepository;
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
-     * Método para autenticar o usuário com base no email e senha.
+     * Autentica o usuário com base no email e senha.
      *
      * @param loginRequest DTO contendo email e senha.
      * @return true se as credenciais forem válidas; false caso contrário.
      */
     public boolean authenticate(LoginRequestDTO loginRequest) {
-        // Busca o fotógrafo pelo email, retornando um Optional
-        Optional<Photographer> optionalPhotographer = photographerRepository.findByEmail(loginRequest.getEmail());
-
-        // Verifica se o fotógrafo existe e se a senha está correta
-        if (optionalPhotographer.isPresent()) {
-            Photographer photographer = optionalPhotographer.get();
-            return loginRequest.getPassword().equals(photographer.getPassword());
+        Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(loginRequest.getEmail());
+        if (optionalUsuario.isPresent()) {
+            Usuario usuario = optionalUsuario.get();
+            return passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword());
         }
-
-        // Retorna false se o fotógrafo não for encontrado
         return false;
     }
-    
-    public Photographer authenticateAndGet(LoginRequestDTO loginRequest) {
-        return photographerRepository.findByEmail(loginRequest.getEmail())
-                .filter(photographer -> photographer.getPassword().equals(loginRequest.getPassword()))
+
+    /**
+     * Autentica e retorna o objeto Usuario correspondente.
+     *
+     * @param loginRequest DTO contendo email e senha.
+     * @return o objeto Usuario se as credenciais forem válidas; null caso contrário.
+     */
+    public Usuario authenticateAndGet(LoginRequestDTO loginRequest) {
+        return usuarioRepository.findByEmail(loginRequest.getEmail())
+                .filter(usuario -> passwordEncoder.matches(loginRequest.getPassword(), usuario.getPassword()))
                 .orElse(null);
     }
-    
 }

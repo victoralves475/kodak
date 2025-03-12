@@ -41,10 +41,11 @@ public class SignUpController {
     @PostMapping
     public ModelAndView savePhotographer(
             @Valid Photographer photographer, BindingResult result,
+            @RequestParam("password") String password,  // senha recebida separadamente
             @RequestParam("foto") MultipartFile photo,
             ModelAndView model,
-            RedirectAttributes attr) throws IOException
-    {
+            RedirectAttributes attr) throws IOException {
+
         if (result.hasErrors()) {
             model.setViewName("sign-up/form");
             return model;
@@ -56,17 +57,19 @@ public class SignUpController {
             return model;
         }
 
+        // Salva o fotógrafo sem a senha, pois ela não faz mais parte da entidade
         Photographer savedPhotographer = photographerService.savePhotographer(photographer);
 
-        usuarioService.createUsuarioFromPhotographer(savedPhotographer);
+        // Cria o usuário de segurança com a senha encriptada usando o método específico
+        usuarioService.createUsuarioFromPhotographerWithPassword(savedPhotographer, password);
 
-        if(!photo.isEmpty()){
-            String filePath = fileStorageService.saveProfilePic(photo, photographer.getId());
-            photographer.setProfilePicPath(filePath);
-            photographerService.savePhotographer(photographer);
+        if (!photo.isEmpty()) {
+            String filePath = fileStorageService.saveProfilePic(photo, savedPhotographer.getId());
+            savedPhotographer.setProfilePicPath(filePath);
+            photographerService.savePhotographer(savedPhotographer);
         }
 
-        attr.addFlashAttribute("mensagem", "Fotógrafo " + photographer.getName() + " salvo com sucesso!");
+        attr.addFlashAttribute("mensagem", "Fotógrafo " + savedPhotographer.getName() + " salvo com sucesso!");
         model.setViewName("redirect:/login/sign-in");
         return model;
     }
