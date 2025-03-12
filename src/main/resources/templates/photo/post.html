@@ -109,7 +109,7 @@
         </div>
       </div>
       <!-- Seção de novo comentário -->
-      <div class="mt-4" th:if="${!loggedPhotographer.commentSuspended}">
+      <div class="mt-4" th:if="${!loggedPhotographer.commentSuspended or photo.getPhotographer().equals(loggedPhotographer)}">
         <form id="new-comment-form">
           <input type="hidden" name="photoId" th:value="${photo.id}" />
           <textarea name="commentText" rows="3" class="w-full p-2 border rounded-lg" placeholder="Adicione um comentário..."></textarea>
@@ -120,7 +120,7 @@
           </div>
         </form>
       </div>
-      <div class="mt-4 text-center text-red-600 font-semibold" th:if="${loggedPhotographer.commentSuspended}">
+      <div class="mt-4 text-center text-red-600 font-semibold" th:if="${loggedPhotographer.commentSuspended and !photo.getPhotographer().equals(loggedPhotographer)}">
         Sua conta está suspensa para comentar.
       </div>
     </div>
