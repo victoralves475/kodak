@@ -20,7 +20,7 @@
                         </svg>
                     </div>
                     <input type="text" id="searchInput" onkeydown="if(event.key === 'Enter') searchPhotographers()" onkeyup="searchPhotographers()" class="block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500" placeholder="Procure por outros fotógrafos..." required />
-                    <button type="button" onclick="searchPhotographers()" class="text-gray-700 absolute end-2.5 top-1.5 bg-white hover:bg-black hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button>
+                    <button type="button" onclick="searchPhotographers()" class="text-gray-500 absolute end-2.5 top-1.5 bg-gray-50 hover:bg-gray-50 hover:text-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Pesquisar</button>
                     <div id="results" class="absolute bg-white w-full text-black z-50">
                         <!-- Aqui será renderizada a lista de fotógrafos -->
                     </div>
@@ -29,9 +29,9 @@
 
             <!-- Navigation Menu -->
             <nav id="menu" class="hidden lg:flex flex-col lg:flex-row items-center lg:space-x-6">
-                <a href="/admin" th:href="@{/admin}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Acesso Administrativo</a>
+                <a href="/admin" th:href="@{/admin}" class="block py-2 px-4 text-gray-500 hover:text-gray-700">Acesso Administrativo</a>
                 <!-- Link de logout acionando um formulário POST oculto -->
-                <a href="#" onclick="document.getElementById('logoutForm').submit();" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded">Sair</a>
+                <a href="#" onclick="document.getElementById('logoutForm').submit();" class="block py-2 px-4 text-gray-500 hover:text-gray-700">Sair</a>
                 <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
                     <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
                 </form>

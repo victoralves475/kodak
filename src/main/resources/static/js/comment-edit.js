@@ -146,3 +146,146 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// Exibir campo para adicionar hashtag
+const enableAddHashtag = () => {
+    document.getElementById('add-hashtag-container').classList.remove('hidden');
+    document.getElementById('add-hashtag-button').classList.add('hidden');
+};
+
+// Ocultar campo para adicionar hashtag
+const disableAddHashtag = () => {
+    document.getElementById('add-hashtag-container').classList.add('hidden');
+    document.getElementById('add-hashtag-button').classList.remove('hidden');
+};
+
+// Função para adicionar hashtag via AJAX
+const addHashtag = (photoId) => {
+    const hashtagName = document.getElementById('new-hashtag-input').value.trim();
+    if (hashtagName === "") {
+        alert("Digite o nome da hashtag.");
+        return;
+    }
+    const csrfHeaders = getCsrfHeaders();
+    fetch('/tag/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...csrfHeaders
+        },
+        body: JSON.stringify({ photoId, hashtagName })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Atualiza para exibir a nova hashtag
+            } else {
+                alert("Erro ao adicionar hashtag: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao adicionar hashtag:", error);
+            alert("Erro ao adicionar hashtag.");
+        });
+};
+
+// Alterna visibilidade da caixa de busca das hashtags
+const toggleDropdown = () => {
+    const dropdownContainer = document.getElementById('dropdown-container');
+    dropdownContainer.classList.toggle('hidden');
+};
+
+// Exibe/Oculta o input para adicionar hashtags
+const toggleHashtagInput = () => {
+    document.getElementById('hashtag-input-container').classList.toggle('hidden');
+    document.getElementById('new-hashtag').value = '';
+    document.getElementById('tag-suggestions').innerHTML = '';
+};
+
+// Busca hashtags existentes enquanto digita
+const searchHashTags = (partialName) => {
+    if (partialName.trim().length === 0) {
+        document.getElementById('tag-suggestions').innerHTML = '';
+        return;
+    }
+
+    fetch(`/tag/searchTags?name=${encodeURIComponent(partialName)}`)
+        .then(response => response.json())
+        .then(tags => {
+            const suggestions = document.getElementById('tag-suggestions');
+            suggestions.innerHTML = '';
+            tags.forEach(tag => {
+                const div = document.createElement('div');
+                div.textContent = tag;
+                div.className = 'p-2 cursor-pointer hover:bg-gray-200';
+                div.onclick = () => {
+                    document.getElementById('new-hashtag').value = tag;
+                    suggestions.innerHTML = '';
+                };
+                suggestions.appendChild(div);
+            });
+        });
+};
+
+// Adiciona hashtag selecionada/criada via AJAX
+const confirmAddHashtag = (photoId) => {
+    const hashtagInput = document.getElementById('new-hashtag').value.trim();
+    if (hashtagInput === "") {
+        alert("Digite uma hashtag.");
+        return;
+    }
+
+    const csrfHeaders = getCsrfHeaders();
+    fetch('/tag/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', ...csrfHeaders},
+        body: JSON.stringify({ photoId, tag: hashtagInput })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert("Erro ao adicionar hashtag: " + data.error);
+            }
+        })
+        .catch(err => console.error("Erro ao adicionar hashtag:", err));
+};
+
+
+
+
+
+// Remove hashtag via AJAX
+const removeHashtag = (photoId, tagId) => {
+    const csrfHeaders = getCsrfHeaders();
+    fetch('/tag/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...csrfHeaders
+        },
+        body: JSON.stringify({ photoId, tagId })
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tagElement = document.getElementById(`tag-container-${tagId}`);
+                if (tagElement) {
+                    tagElement.remove();
+                } else {
+                    console.warn(`Elemento com id tag-container-${tagId} não encontrado.`);
+                }
+            } else {
+                alert("Erro ao remover hashtag: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Erro ao remover hashtag:", error);
+            alert("Erro ao remover hashtag.");
+        });
+};
+
