@@ -50,10 +50,10 @@ public class CommentRestController {
         Photo photo = photoService.getPhotoById(photoId)
                 .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
-        if (loggedPhotographer.getId() == photo.getPhotographer().getId()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("success", false, "error", "Você não pode comentar em suas próprias fotos."));
-        }
+//        if (loggedPhotographer.getId() == photo.getPhotographer().getId()) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body(Map.of("success", false, "error", "Você não pode comentar em suas próprias fotos."));
+//        }
 
         Comment comment = commentService.addCommentToPhoto(commentText, photo, loggedPhotographer);
 
