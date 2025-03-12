@@ -27,14 +27,42 @@ public class HashtagService {
     // CRUD
 
     // Create
+//    public Hashtag create(Hashtag hashtag) {
+//        String tagName = hashtag.getTagName().trim();
+//        if (!tagName.startsWith("#")) {
+//            tagName = "#" + tagName;
+//        }
+//        hashtag.setTagName(tagName);
+//        return hashtagRepository.save(hashtag);
+//    }
+
     public Hashtag create(Hashtag hashtag) {
         String tagName = hashtag.getTagName().trim();
+
+        // Garante que a hashtag comece com '#'
         if (!tagName.startsWith("#")) {
             tagName = "#" + tagName;
         }
+
+        // Remove espaços e substitui ocorrências de '#' no meio da hashtag
+        tagName = tagName.replaceAll("\\s+", "").replaceAll("#+", "#");
+
+        // Se ainda houver '#' no meio da string, corrige removendo e mantendo apenas o primeiro
+        if (tagName.indexOf('#', 1) != -1) {
+            tagName = "#" + tagName.substring(1).replaceAll("#", "");
+        }
+
+        // Verifica se a hashtag já existe no banco antes de persistir
+        Optional<Hashtag> existingHashtag = hashtagRepository.findByTagNameContainingIgnoreCase(tagName);
+        if (existingHashtag.isPresent()) {
+            return existingHashtag.get();
+        }
+
+        // Caso não exista, persiste a nova hashtag
         hashtag.setTagName(tagName);
         return hashtagRepository.save(hashtag);
     }
+
 
 
     // Read
