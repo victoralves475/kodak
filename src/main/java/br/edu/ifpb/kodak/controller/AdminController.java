@@ -64,13 +64,16 @@ public class AdminController {
      */
     @PostMapping("/photographers/update")
     public String updatePhotographers(
+            @RequestParam(name="displayedIds") List<Integer> displayedIds,
             @RequestParam(name="suspendIds", required=false) List<Integer> suspendIds,
             @RequestParam(name="adminIds", required=false) List<Integer> adminIds,
+            @RequestParam(name="commentSuspendedIds", required=false) List<Integer> commentSuspendedIds,
             RedirectAttributes redirectAttributes) {
 
-        List<Photographer> allPhotographers = photographerService.getAllPhotographers();
+        // Busca apenas os fotógrafos que estavam na página atual
+        List<Photographer> photographersToUpdate = photographerService.getPhotographersByIds(displayedIds);
 
-        for (Photographer photographer : allPhotographers) {
+        for (Photographer photographer : photographersToUpdate) {
             // Atualiza o status de suspensão
             boolean shouldSuspend = (suspendIds != null && suspendIds.contains(photographer.getId()));
             photographer.setSuspended(shouldSuspend);
@@ -83,10 +86,17 @@ public class AdminController {
                 photographer.setAdmin(false);
                 usuarioService.demoteFromAdmin(photographer.getEmail());
             }
+
+            // Atualiza o status de suspensão de comentários
+            boolean shouldCommentBeSuspended = (commentSuspendedIds != null && commentSuspendedIds.contains(photographer.getId()));
+            photographer.setCommentSuspended(shouldCommentBeSuspended);
+
             photographerService.savePhotographer(photographer);
         }
 
         redirectAttributes.addFlashAttribute("message", "As alterações foram salvas com sucesso.");
         return "redirect:/admin";
     }
+
+
 }

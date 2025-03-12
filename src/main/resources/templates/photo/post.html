@@ -1,239 +1,130 @@
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  layout:decorate="~{/layout/layout}"
-  th:with="title='Publicação'"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
->
-  <head>
-    <link rel="stylesheet" th:href="@{/css/output.css}" />
-    <script type="text/javascript" th:src="@{/js/comment-edit.js}"></script>
-  </head>
-  <body>
-    <div layout:fragment="content">
-      <div
-        class="bg-gray-100 w-auto justify-center mx-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2"
-        style="height: 750px"
-      >
-        <div
-          class="alert alert-danger text-center"
-          th:if="${errorMessage}"
-          th:text="${errorMessage}"
-        ></div>
-
-        <!-- Imagem -->
-        <div class="flex items-center justify-center">
-          <img
-            th:src="@{${photo.path}}"
-            alt="Post Image"
-            class="justify-center object-cover the-photo h-full w-auto"
-          />
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}"
+      th:with="title='Publicação'">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" th:href="@{/css/output.css}" />
+  <!-- Meta tags CSRF para uso do JavaScript -->
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <!-- Inclui o arquivo JavaScript para AJAX -->
+  <script type="text/javascript" th:src="@{/js/comment-edit.js}"></script>
+  <title>Publicação</title>
+</head>
+<body>
+<div layout:fragment="content" class="p-4">
+  <!-- Seção da publicação -->
+  <div class="bg-gray-100 w-auto mx-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2" style="min-height: 750px">
+    <!-- Imagem da publicação -->
+    <div class="flex items-center justify-center">
+      <img th:src="@{${photo.path}}" alt="Post Image" class="object-cover h-full w-auto" />
+    </div>
+    <!-- Área de comentários -->
+    <div class="bg-white px-8 pt-8 shadow-md">
+      <!-- Informações do fotógrafo -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <img th:src="@{${photo.photographer.profilePicPath}}" alt="User Avatar" class="w-10 h-10 rounded-full" />
+          <span class="font-semibold text-gray-800" th:text="${photo.photographer.name}"></span>
         </div>
-
-        <div class="bg-white px-8 h-full pt-8 shadow-md">
-          <!-- Info do usuário -->
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center space-x-2">
-              <img
-                th:src="@{${photo.photographer.profilePicPath}}"
-                alt="User Avatar"
-                class="w-8 h-8 rounded-full"
-              />
-              <div>
-                <p
-                  class="text-gray-800 font-semibold"
-                  th:text="${photo.photographer.name}"
-                ></p>
-              </div>
-            </div>
-            <div class="text-gray-500 cursor-pointer">
-              <button class="hover:bg-gray-50 rounded-full p-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="12" cy="7" r="1" />
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="12" cy="17" r="1" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Descrição e hashtags -->
-          <div class="mb-4">
-            <p class="text-gray-800" th:text="${photo.description}"></p>
-            <div th:each="hashtags : ${photo.tags}">
-              <a
-                href="#"
-                class="text-blue-600"
-                th:text="${hashtags.tagName}"
-              ></a>
-            </div>
-          </div>
-
-          <!-- Seção de Curtidas e Comentários -->
-          <div class="flex items-center justify-between text-gray-500">
-            <div class="flex items-center space-x-2">
-              <form th:action="@{/photo/like}" method="post">
-                <input type="hidden" name="photoId" th:value="${photo.id}" />
-                <button
-                  type="submit"
-                  class="flex justify-center items-center gap-2 px-2 hover:bg-gray-500 rounded-full p-1"
-                >
-                  <svg
-                    class="w-5 h-5 fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M12 21.35l-1.45-1.32C6.11 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-4.11 6.86-8.55 11.54L12 21.35z"
-                    />
-                  </svg>
-                </button>
-              </form>
-              <span th:text="${#lists.size(photo.likedPhotographers)}"></span>
-              <span> Curtidas</span>
-            </div>
-          </div>
-
-          <hr class="mt-2 mb-2" />
-          <div class="flex justify-between">
-            <div class="align-middle p-2">
-              <p class="text-gray-800 font-semibold">Comentários</p>
-            </div>
-            <div th:if="${isAdmin and #lists.size(photo.comments) > 0}">
-              <form th:action="@{/pdf}" method="get">
-                <input type="hidden" name="photo_id" th:value="${photo.id}">
-                <button type="submit"
-                        class="flex justify-center items-center gap-2 px-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                  <i id="file-pdf-icon" class="fa-solid fa-file-pdf fa-2xl w-10 text-center"></i>
-                  Baixar
-                </button>
-              </form>
-            </div>
-          </div>
-          <hr class="mt-2 mb-2" />
-
-          <!-- Formulário para adicionar comentário -->
-          <div class="mx-auto max-w-xl mt-4">
-            <form th:action="@{/comment/new}" method="post">
-              <input type="hidden" name="photoId" th:value="${photo.id}" />
-              <div>
-                <label class="mb-2 text-gray-900" for="comment"
-                  >Escreva um comentário:</label
-                >
-              </div>
-              <div>
-                <textarea
-                  rows="4"
-                  class="w-full mb-4 px-3 py-2 border-2 border-gray-300 rounded-lg"
-                  id="comment"
-                  name="commentText"
-                  th:value="${commentText}"
-                ></textarea>
-              </div>
-              <div class="flex justify-end">
-                <button
-                  type="submit"
-                  class="bg-gray-500 hover:bg-gray-700 font-bold text-white py-2 px-4 rounded max-w-[100px]"
-                >
-                  Enviar
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Lista de Comentários -->
-          <div class="mt-4">
-            <div
-              class="p-4 space-x-2 mt-2"
-              th:each="comment : ${photo.comments}"
-            >
-              <div>
-                <div class="flex gap-2 border-2 p-4 w-full">
-                  <div class="basis-1/6">
-                    <img
-                      th:src="@{${comment.photographer.profilePicPath}}"
-                      alt="User Avatar"
-                      class="w-6 h-6 rounded-full"
-                    />
-                  </div>
-                  <span
-                    class="text-gray-800 font-semibold basis-1/2"
-                    th:text="${comment.photographer.name}"
-                  ></span>
-                  <span
-                    class="text-gray-500 font-semibold text-xs basis-1/4"
-                    th:text="${#temporals.format(comment.createdAt,'dd/MM/yyyy HH:mm')}"
-                  ></span>
-                </div>
-
-                <!-- Verifica se o usuário autenticado é o autor do comentário -->
-                <div class="flex flex-row justify-between gap-2 border-2 p-2">
-                  <p
-                    class="text-gray-500 text-sm basis-3/5 border-2"
-                    th:text="${comment.commentText}"
-                  ></p>
-                  <div
-                    id="actions"
-                    class="flex flex-col p-2 gap-1 border-2 text-center basis-2/5"
-                  >
-                      <!-- Botão de Editar -->
-                      <button
-                              th:if="${comment.photographer.id == loggedPhotographer.id}"
-                              th:onclick="|enableEdit(${comment.id})|"
-                              class="text-blue-600 hover:underline text-sm border-2">
-                        Editar
-                      </button>
-
-                    <!-- Botão de Apagar -->
-
-                    <!-- Botão de Excluir (aparece para o dono do comentário ou admin) -->
-                    <form
-                      class="border-2 w-full "
-                      th:if="${comment.photographer.id == loggedPhotographer.id || isAdmin}"
-                      th:action="@{/comment/delete/{id}(id=${comment.id})}"
-                      method="post"
-                      onsubmit="return confirmDelete();"
-                    >
-                      <button
-                        type="submit"
-                        class="text-red-600 hover:underline text-sm"
-                      >
-                        Apagar
-                      </button>
-                    </form>
-                  </div>
-                </div>
-<!--                style="display: none;"-->
-                <!-- Formulário de edição (oculto por padrão) -->
-                <div th:id="|edit-container-${comment.id}|"  class="border-2 p-2 hidden">
-                  <form   th:id="|edit-form-${comment.id}|"
-                          method="post"
-                          th:action="@{/comment/update/{id}(id=${comment.id})}"
-                          onsubmit="return confirmEmptyComment(this)"
-                          class="flex justify-between gap-2">
-                    <textarea th:id="|edit-textarea-${comment.id}|" name="commentText" rows="2"
-                              class="basis-3/5 mb-4 px-3 py-2 border-2 border-gray-300 rounded-lg"></textarea>
-                    <div class="basis-2/5 border-2 p-2 flex flex-col gap-1">
-                      <button type="submit" class="border-2 w-full text-sm">Salvar</button>
-                      <button th:onclick="|disableEdit(event,${comment.id})|" class="border-2 w-full text-sm">Cancelar</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Fim da seção de comentários -->
+        <div class="text-gray-500 cursor-pointer">
+          <button class="p-1 hover:bg-gray-200 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="5" r="1" />
+              <circle cx="12" cy="12" r="1" />
+              <circle cx="12" cy="19" r="1" />
+            </svg>
+          </button>
         </div>
       </div>
+      <!-- Descrição e hashtags -->
+      <div class="mb-4">
+        <p class="text-gray-800" th:text="${photo.description}"></p>
+        <div th:each="hashtag : ${photo.tags}">
+          <a href="#" class="text-blue-600" th:text="${hashtag.tagName}"></a>
+        </div>
+      </div>
+      <!-- Seção de curtidas -->
+      <div class="flex items-center text-gray-500 mb-4">
+        <button type="button" class="flex items-center gap-1 p-1 hover:bg-gray-200 rounded-full"
+                th:onclick="|likePhoto(${photo.id})|">
+          <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C6.11 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-4.11 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+        <span id="likes-count" th:text="${#lists.size(photo.likedPhotographers)}"></span>
+      </div>
+
+
+      <hr class="mb-4" />
+      <!-- Seção de Comentários -->
+      <div class="mb-4">
+      <div class="flex justify-between">
+        <div class="align-middle p-2">
+          <p class="text-gray-800 font-semibold mb-2">Comentários</p>
+        </div>
+        <div th:if="${isAdmin and #lists.size(photo.comments) > 0}">
+          <form th:action="@{/pdf}" method="get">
+            <input type="hidden" name="photo_id" th:value="${photo.id}">
+            <button type="submit"
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+              <i id="file-pdf-icon" class="fa-solid fa-file-pdf fa-2xl w-10 text-center"></i>
+              Baixar
+            </button>
+          </form>
+        </div>
+      </div>
+        <!-- Lista de Comentários -->
+        <div class="space-y-4" th:each="comment : ${photo.comments}" th:id="'comment-container-' + ${comment.id}">
+          <div class="flex items-start space-x-3">
+            <img th:src="@{${comment.photographer.profilePicPath}}" alt="Avatar" class="w-8 h-8 rounded-full" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-gray-800" th:text="${comment.photographer.name}"></span>
+                <span class="text-xs text-gray-500" th:text="${#temporals.format(comment.createdAt,'dd/MM/yyyy HH:mm')}"></span>
+              </div>
+              <p th:id="'comment-text-' + ${comment.id}" class="text-gray-700" th:text="${comment.commentText}"></p>
+              <div class="flex space-x-2 mt-1">
+                <div th:if="${comment.photographer.id == loggedPhotographer.id}">
+                  <button type="button" class="text-blue-600 text-xs hover:underline" th:onclick="|enableEdit(${comment.id})|">Editar</button>
+                </div>
+                <div th:if="${comment.photographer.id == loggedPhotographer.id or isAdmin}">
+                  <button type="button" class="text-red-600 text-xs hover:underline" th:onclick="|deleteComment(${comment.id})|">Excluir</button>
+                </div>
+              </div>
+              <!-- Formulário de edição inline (oculto por padrão) -->
+              <div th:id="'edit-container-' + ${comment.id}" class="hidden mt-2">
+                <textarea th:id="'edit-textarea-' + ${comment.id}" name="commentText" rows="2" class="w-full p-2 border rounded" th:text="${comment.commentText}"></textarea>
+                <div class="flex justify-end space-x-2 mt-2">
+                  <button type="button" class="px-2 py-1 text-xs bg-blue-600 text-white rounded" th:onclick="|saveComment(${comment.id})|">Salvar</button>
+                  <button type="button" class="px-2 py-1 text-xs bg-gray-600 text-white rounded" th:onclick="|disableEdit(${comment.id})|">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Seção de novo comentário -->
+      <div class="mt-4" th:if="${!loggedPhotographer.commentSuspended}">
+        <form id="new-comment-form">
+          <input type="hidden" name="photoId" th:value="${photo.id}" />
+          <textarea name="commentText" rows="3" class="w-full p-2 border rounded-lg" placeholder="Adicione um comentário..."></textarea>
+          <div class="flex justify-end mt-2">
+            <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+              Enviar
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="mt-4 text-center text-red-600 font-semibold" th:if="${loggedPhotographer.commentSuspended}">
+        Sua conta está suspensa para comentar.
+      </div>
     </div>
-  </body>
+  </div>
+</div>
+</body>
 </html>
