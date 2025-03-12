@@ -9,6 +9,10 @@
         <form th:action="@{/photographer/upload-photo}" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="photographerId" th:value="${photographerId}" />
 
+            <div th:if="${error}" class="text-sm font-semibold text-red-600">
+                <p th:text="${error}"></p>
+            </div>
+
             <div class="mb-6">
                 <label for="photo" class="block text-sm font-medium text-gray-700">Escolha uma foto</label>
                 <input type="file" name="photo" id="photo" required

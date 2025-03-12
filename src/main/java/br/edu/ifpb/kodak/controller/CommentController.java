@@ -56,6 +56,12 @@ public class CommentController {
             return "redirect:/photo/post?photoId=" + photoId;
         }
 
+        // Se o comentário estiver vazio, não permite comentar
+        if (commentText.isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Comentário não pode estar vazio.");
+            return "redirect:/photo/post?photoId=" + photoId;
+        }
+
         // Adiciona o comentário e redireciona para a página da foto
         commentService.addCommentToPhoto(commentText, photo, loggedPhotographer);
         return "redirect:/photo/post?photoId=" + photoId;
