@@ -6,7 +6,7 @@
 <div layout:fragment="content" class="flex flex-col h-full">
     <div class="max-w-md h-3/4 mx-auto p-6 bg-gray-100 border border-gray-300 rounded-lg">
         <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Nova Publicação</h2>
-        <form th:action="@{/photographer/upload-photo}" method="POST" enctype="multipart/form-data">
+        <form id="photoform" th:action="@{/photographer/upload-photo}" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="photographerId" th:value="${photographerId}" />
 
             <div class="mb-6">
@@ -44,7 +44,7 @@
 
             <div class="text-center">
                 <button type="submit"
-                        class="py-2 px-6 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                        class="py-2 px-6 bg-black text-white font-medium rounded-lg hover:bg-blue-700">
                     Publicar
                 </button>
             </div>
@@ -79,7 +79,14 @@
                     resultsContainer.innerHTML = '';
                     console.log(hashtags)
                     if (!hashtags || hashtags.length === 0 ) {
-                        resultsContainer.innerHTML = '<p class="text-gray-500 px-4 py-2 text-sm text-center">Nenhuma hashtag encontrada!</p>';
+                        resultsContainer.innerHTML = '<a id="newtag" class="block text-gray-700 px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md">'+query+'</a>';
+                        const newtagItem = document.getElementById('newtag')
+                        newtagItem.addEventListener("click", () => {
+                            addTag(query)
+                            toggleDropdown()
+                            searchInput.value = ''
+                        });
+
                         return;
                     }
                     hashtags.forEach(tag => {
@@ -87,8 +94,13 @@
                         item.href = "#";
                         item.classList.add("block", "px-4", "py-2", "text-gray-700", "hover:bg-gray-100", "cursor-pointer", "rounded-md");
                         item.textContent = tag;
-                        item.addEventListener("click", () => addTag(tag));
+                        item.addEventListener("click", () => {
+                            addTag(tag)
+                            toggleDropdown()
+                            // searchInput.value = ''
+                        });
                         resultsContainer.appendChild(item);
+
                     });
                 })
                 .catch(error => console.error("Erro ao buscar hashtags:", error));
@@ -99,8 +111,9 @@
             selectedTags.add(tag);
 
             const chip = document.createElement("div");
-            chip.classList.add("flex", "items-center", "bg-blue-600", "text-white", "rounded-full", "px-3", "py-1", "text-sm", "cursor-pointer");
+            chip.classList.add("flex", "items-center", "bg-black", "text-white", "rounded-sm", "px-3", "py-1", "text-sm", "cursor-pointer");
             chip.textContent = tag;
+            console.log(selectedTags)
 
             // Botão de remover
             const removeBtn = document.createElement("span");
@@ -119,7 +132,7 @@
             hiddenInput.type = "hidden";
             hiddenInput.name = "hashtags"; // Isso garante que os dados sejam enviados no POST
             hiddenInput.value = tag;
-            document.querySelector("form").appendChild(hiddenInput);
+            document.getElementById("photoform").appendChild(hiddenInput);
         }
         // Set initial state
         // toggleDropdown();

@@ -91,16 +91,17 @@ public class PhotographerController {
             // Salva a foto no sistema de arquivos
             String photoPath = fileStorageService.savePhoto(photo, photographerId);
 
+
             // Cria a entidade Photo
             Photo newPhoto = new Photo();
             newPhoto.setPath(photoPath);
             newPhoto.setDescription(description);
 
 
-
             Photographer photographer = photographerService.getPhotographerById(photographerId)
                     .orElseThrow(() -> new RuntimeException("Fotógrafo não encontrado"));
             newPhoto.setPhotographer(photographer);
+
 
             if (hashtags != null && !hashtags.isEmpty()) {
                 Set<Hashtag> hashtagSet = hashtags.stream()
@@ -108,6 +109,7 @@ public class PhotographerController {
                         .collect(Collectors.toSet());
                 newPhoto.setTags(hashtagSet);
             }
+
 
             photoService.savePhoto(newPhoto);
             redirectAttributes.addFlashAttribute("successMessage", "Foto publicada com sucesso!");
