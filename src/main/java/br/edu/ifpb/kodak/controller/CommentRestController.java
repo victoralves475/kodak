@@ -42,13 +42,13 @@ public class CommentRestController {
         Photographer loggedPhotographer = photographerService.getPhotographerByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Fotógrafo logado não encontrado"));
 
-        if (loggedPhotographer.isCommentSuspended()) {
+        Photo photo = photoService.getPhotoById(photoId)
+                .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
+
+        if (loggedPhotographer.isCommentSuspended() && !photo.getPhotographer().equals(loggedPhotographer)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of("success", false, "error", "Sua conta está suspensa para comentar."));
         }
-
-        Photo photo = photoService.getPhotoById(photoId)
-                .orElseThrow(() -> new RuntimeException("Foto não encontrada"));
 
 //        if (loggedPhotographer.getId() == photo.getPhotographer().getId()) {
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN)
