@@ -13,5 +13,4 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Integer> {
     Optional<Hashtag> findByTagNameIgnoreCase(String tagName);
     List<Hashtag> findAllByTagNameContainingIgnoreCase(String tagName);
 
-
 }
