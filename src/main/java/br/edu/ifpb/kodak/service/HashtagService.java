@@ -70,8 +70,8 @@ public class HashtagService {
         return hashtagRepository.findById(id);
     }
 
-    public Optional<Hashtag> getHashtagByTagName(String tagName) {
-        return hashtagRepository.findByTagNameContainingIgnoreCase(tagName);
+    public List<Hashtag> getHashtagByTagName(String tagName) {
+        return hashtagRepository.findAllByTagNameContainingIgnoreCase(tagName);
     }
 
     // Find or Create
