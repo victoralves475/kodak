@@ -79,6 +79,8 @@
                         Publicar
                     </button>
                 </div>
+            </div>
+
         </form>
     </div>
 
@@ -168,15 +170,14 @@
             const query = document.getElementById('search-input').value.trim();
             const resultsContainer = document.getElementById('tagresults');
 
-            if (query.length === 0) {
+            if (query.length < 3) {
                 document.getElementById('tagresults').innerHTML = '';
                 return;
             }
+
             fetch(`/tag/search?name=${encodeURIComponent(query)}`)
                 .then(response => response.json())
                 .then(hashtags => {
-                    resultsContainer.innerHTML = '';
-                    console.log(hashtags)
                     resultsContainer.innerHTML = '<a id="newtag" class="block text-gray-700 text-center text-sm px-4 py-2 hover:bg-gray-100 cursor-pointer rounded-md"> Criar nova tag <i class="fa-solid text-black fa-square-plus"></i></a>';
                     const newtagItem = document.getElementById('newtag')
                     newtagItem.addEventListener("click", () => {
@@ -197,8 +198,7 @@
                                 // resultsContainer.innerHTML = ''
                             }
                         }
-                    });
-
+                        });
 
                     hashtags.forEach(tag => {
                         const item = document.createElement('a');
@@ -212,6 +212,7 @@
                             addTag(tag)
                             toggleDropdown()
                             searchInput.value = ''
+                            // resultsContainer.innerHTML = ''
                         });
                         resultsContainer.appendChild(item);
 

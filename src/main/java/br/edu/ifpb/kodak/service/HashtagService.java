@@ -78,6 +78,14 @@ public class HashtagService {
     public Hashtag findOrCreateByName(String tagName) {
         return hashtagRepository.findByTagNameIgnoreCase(tagName)
                 .orElseGet(() -> create(new Hashtag(tagName)));
+//         List<Hashtag> hashtags = hashtagRepository.findByTagNameContainingIgnoreCase(tagName);
+//         // Se já existe pelo menos uma hashtag correspondente, retorna a primeira
+//         if (!hashtags.isEmpty()) {
+//             return hashtags.get(0);
+//         }
+
+//         // Caso contrário, cria uma nova
+//         return create(new Hashtag(tagName));
     }
 
     // Delete
