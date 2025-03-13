@@ -18,7 +18,7 @@
   <spam th:text="${photo.description}"></spam>
   <div class="bg-gray-100 w-auto mx-10 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2" style="min-height: 750px">
     <div class="flex items-center justify-center">
-      <img th:src="@{${photo.path}}" alt="Post Image" class="object-cover h-auto w-auto" />
+      <img th:src="@{${photo.path}}" alt="Post Image" class="object-cover h-full w-auto" />
     </div>
     <div class="bg-white px-8 pt-8 pb-8 shadow-md">
       <div class="flex items-center justify-between mb-4">

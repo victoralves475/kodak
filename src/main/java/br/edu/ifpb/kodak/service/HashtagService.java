@@ -37,7 +37,9 @@ public class HashtagService {
 //    }
 
     public Hashtag create(Hashtag hashtag) {
+
         String tagName = hashtag.getTagName().trim();
+
 
         // Garante que a hashtag comece com '#'
         if (!tagName.startsWith("#")) {
@@ -53,7 +55,7 @@ public class HashtagService {
         }
 
         // Verifica se a hashtag já existe no banco antes de persistir
-        Optional<Hashtag> existingHashtag = hashtagRepository.findByTagNameContainingIgnoreCase(tagName);
+        Optional<Hashtag> existingHashtag = hashtagRepository.findByTagNameIgnoreCase(tagName);
         if (existingHashtag.isPresent()) {
             return existingHashtag.get();
         }
