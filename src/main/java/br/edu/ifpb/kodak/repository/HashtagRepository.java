@@ -9,6 +9,8 @@ import br.edu.ifpb.kodak.model.Hashtag;
 
 public interface HashtagRepository extends JpaRepository<Hashtag, Integer> {
 
-    List<Hashtag> findByTagNameContainingIgnoreCase(String tagName);
+    Optional<Hashtag> findByTagNameContainingIgnoreCase(String tagName);
+    Optional<Hashtag> findByTagNameIgnoreCase(String tagName);
+    List<Hashtag> findAllByTagNameContainingIgnoreCase(String tagName);
 
 }

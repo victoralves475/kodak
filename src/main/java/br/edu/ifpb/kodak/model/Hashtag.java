@@ -16,7 +16,7 @@ public class Hashtag {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Getter
 	@Setter
-	private int id;
+	private Integer id;
 
 	@Column(name = "tag_name", nullable = false)
 	@Getter

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 // @SpringBootApplication
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class) // ignore security bcz its bothersome
+@SpringBootApplication() // ignore security bcz its bothersome
 public class KodakApplication {
 
 	public static void main(String[] args) {

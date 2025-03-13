@@ -17,15 +17,15 @@
                 <div class="flex h-full items-center">
                     <img th:src="@{${photographer.profilePicPath}}"
                          alt="Foto de Perfil"
-                         class="w-24 h-24 rounded-full border-2 border-solid border-black object-cover" />
+                         class="w-24 h-24 rounded-full border-2 border-gray-300 object-cover" />
                 </div>
                 <!-- Informações do Fotógrafo -->
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-row justify-center">
                         <p class="font-bold text-2xl" th:text="${photographer.name}">Nome do Usuário</p>
                     </div>
-                    <div class="flex gap-6 justify-center text-center text-lg">
-                        <div class="flex flex-col">
+                    <div class="flex gap-6 justify-center text-center text-lg text-gray-600">
+                        <div class="flex flex-col ">
                             <p>Publicações</p>
                             <p th:text="${#lists.size(photographer.photos)}"></p>
                         </div>
@@ -43,12 +43,12 @@
 
                 <div th:if ="${owner}" class="flex h-full gap-2 group absolute right-5">
                     <div class="flex items-center justify-center">
-                        <i id="lock-icon" class="fa-solid fa-lock fa-2xl w-16 text-center"></i>
+                        <i id="lock-icon" class="fa-solid fa-lock fa-2xl w-16 text-center text-gray-600"></i>
                     </div>
                     <label class="inline-flex items-center cursor-pointer">
                         <form th:action="@{/photographer/lockStatus}" method="post">
                         <input type="checkbox" id="toggle-lock" name="locked" value="true" th:checked="${photographer.lockedFollow}"  onchange="document.getElementById('submit-btn').click()" class="sr-only peer">
-                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <div class="relative w-11 h-6 bg-blue-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gray-300 dark:peer-focus:ring-gray-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
                             <button type="submit" id="submit-btn" hidden></button>
                         </form>
                     </label>
@@ -93,7 +93,7 @@
         <!-- Botão Nova Publicação -->
         <div th:if ="${owner}" class="mt-6 mx-auto w-2/3 text-center">
             <a th:href="@{/photographer/new-photo(photographerId=${photographer.id})}"
-               class="inline-block py-2 px-4 bg-black text-white border-black border-2 font-medium rounded-lg hover:bg-white hover:text-black">
+               class="inline-block py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-700 hover:text-white">
                 Nova Publicação
             </a>
         </div>
