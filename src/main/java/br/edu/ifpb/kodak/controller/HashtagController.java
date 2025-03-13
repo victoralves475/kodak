@@ -22,10 +22,15 @@ public class HashtagController {
 
     @GetMapping("/search")
     @ResponseBody
-    public List<String> searchPhotographers(@RequestParam String name) {
-        Optional<Hashtag> hashtagOptional = hashtagService.getHashtagByTagName(name);
-        return hashtagOptional.map(hashtag -> List.of(hashtag.getTagName()))
-                .orElseGet(ArrayList::new);
+    public List<String> searchTags(@RequestParam String name) {
+        List<Hashtag> hashtags = hashtagService.getHashtagByTagName(name);
+        List<String> tagNames = new ArrayList<>();
+
+        for (Hashtag hashtag : hashtags) {
+            tagNames.add(hashtag.getTagName());
+        }
+
+        return tagNames;
     }
 
 }
